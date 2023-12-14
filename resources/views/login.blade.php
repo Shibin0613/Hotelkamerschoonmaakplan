@@ -7,7 +7,7 @@
     <!-- Load Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     @vite(['resources/scss/app.scss', 'resources/css/app.css', 'resources/js/app.js'])
-    <title>Examinator - login</title>
+    <title>Hotelkamerschoonmaakplan - login</title>
 </head>
 
 <body>
@@ -23,8 +23,8 @@
         </div>
         <div class="login-form">
             <div class="title">
-                <img src="{{ asset('images/examinator-logo.svg') }}" alt="Examinator Logo">
-                <h1>Examinator</h1>
+                <img src="{{ asset('images/HSP-logo.png') }}" alt="Examinator Logo">
+                <h1>Hotelkamerschoonmaakplan</h1>
             </div>
             @if (Session::has('error'))
                 <div class="alert alert-danger" role="alert">
@@ -34,11 +34,11 @@
             <form action="{{ route('login') }}" method="POST">
                 @csrf
                 <div class="input">
-                    <label for="email">Email address</label>
+                    <label for="email">Gebruikersnaam</label>
                     <input type="email" name="email" id="email" placeholder="Vul hier je e-mailadres in...">
                 </div>
                 <div class="input">
-                    <label for="password">Password</label>
+                    <label for="password">Wachtwoord</label>
                     <input type="password" name="password" id="password" placeholder="Vul hier je wachtwoord in...">
                 </div>
                 <button>Login</button>

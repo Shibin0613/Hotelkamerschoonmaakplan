@@ -1,0 +1,567 @@
+$font-primary: "Source Sans 3", sans-serif;
+$font-secondary: "League Spartan", sans-serif;
+
+$gradient: linear-gradient(
+    rgba(255, 154, 51, 1) 0%,
+    rgba(255, 205, 154, 1) 100%
+);
+$white: #fff5e7;
+$primary: #ffe9cf;
+$secondary: #ffcd9a;
+$secondary-hover: #ffd5a8;
+$font-black: #212427;
+$font-gray: #868686;
+$gray: #a7a7a7;
+$black: #000;
+$accent: #ff9a33;
+$alert: #c92929;
+$error-popup: #ff9898;
+$error-border: #f37575;
+$success-popup: #9bff98;
+$success-border: #34e743;
+
+* {
+    &::-webkit-scrollbar {
+        width: 5px;
+        margin-left: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $gray;
+        border-radius: 10px;
+    }
+
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+// Global Styling
+p,
+label,
+input,
+select,
+option,
+textarea,
+div,
+li {
+    font-family: $font-primary;
+    color: $font-black;
+    font-size: 18px;
+}
+
+h1,
+h2,
+h3 {
+    font-family: $font-secondary;
+    color: $font-black;
+    margin: 0;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.page-container {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    min-height: 100vh;
+}
+
+.content {
+    padding: 20px 20px 100px 20px;
+    overflow: auto;
+    height: calc(100vh - 70px);
+    scrollbar-gutter: stable both-edges;
+    animation: fade-in 0.5s ease;
+}
+
+.input-row {
+    display: flex;
+    width: 100%;
+    gap: 25px;
+}
+
+.input {
+    width: 100%;
+    margin-bottom: 10px;
+
+    label {
+        display: block;
+        margin-left: 10px;
+    }
+
+    input,
+    select,
+    textarea,
+    div {
+        width: 100%;
+        height: 50px;
+        border: none;
+        border-radius: 5px;
+        background-color: $white;
+        color: $font-black;
+        padding: 0 20px;
+
+        &::placeholder {
+            color: $font-gray;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+body {
+    background-color: $primary;
+}
+
+.input-alert {
+    margin: 0;
+    padding: 5px 10px 0 10px;
+    color: $alert;
+}
+
+.sphere {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(
+        86.47% 86.47% at 66.33% 30.67%,
+        rgba(255, 223, 191, 0.8) 0%,
+        rgba(255, 208, 160, 0.93) 15.23%,
+        rgba(255, 167, 78, 0.97) 60.19%,
+        #ff9a33 100%
+    );
+
+    
+}
+
+.circle {
+    border-radius: 50%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .inner-circle {
+        background-color: $primary;
+        border-radius: 50%;
+    }
+}
+
+.error-popup{
+    position: fixed;
+    transform: translateX(-50%);
+    left: 50%;
+    top: 0;
+    z-index: 1000;
+    padding: 10px 20px;
+    background-color: $error-popup;
+    border: 2px solid $error-border;
+    border-radius: 5px;
+    opacity: 0;
+    animation: customFadeInOut 4s ease-in-out forwards;
+
+    p{
+        margin: 0;
+    }
+}
+
+.success-popup{
+    position: fixed;
+    transform: translateX(-50%);
+    left: 50%;
+    top: 0;
+    z-index: 1000;
+    padding: 5px 20px;
+    background-color: $success-popup;
+    border: 2px solid $success-border;
+    border-radius: 5px;
+    opacity: 0;
+    animation: customFadeInOut 4s ease-in-out forwards;
+
+    p{
+        margin: 0;
+    }
+}
+
+// Mixins
+@mixin input-row() {
+    display: flex;
+    gap: 40px;
+    width: 100%;
+}
+
+@mixin fancy-input() {
+    margin-bottom: 15px;
+
+    label {
+        font-weight: 300;
+    }
+
+    input, textarea, div {
+        height: 60px;
+        border-radius: 5px;
+        border-top: 3px solid #ffcd9a;
+        border-bottom: 3px solid #ffcd9a;
+        background-color: transparent;
+        font-weight: 300;
+    }
+}
+
+@mixin input() {
+    width: 100%;
+    margin-bottom: 15px;
+
+    label {
+        display: block;
+        margin-left: 20px;
+        margin-bottom: 2px;
+    }
+
+    input,
+    textarea,
+    select,
+    div {
+        border: 2px solid $white;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-radius: 10px;
+        background: transparent;
+
+        &::placeholder {
+            color: $font-gray;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    option {
+        background-color: $primary;
+    }
+
+    textarea {
+        min-height: 100px;
+    }
+    div {
+        min-height: 100px;
+    }
+}
+
+@mixin text-gradient-half() {
+    background-image: $gradient;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 100% 400%;
+    background-position: bottom;
+    transition: background-size 0.3s ease-in-out;
+
+    &:hover {
+        background-size: 100% 100%;
+    }
+}
+
+@mixin gradient-half() {
+    background-image: $gradient;
+    background-size: 100% 400%;
+    background-position: bottom;
+    transition: background-size 0.3s ease-in-out;
+
+    &:not(.no-hover):hover {
+        background-size: 100% 100%;
+        cursor: pointer;
+    }
+}
+
+@mixin gradient-full() {
+    background-image: $gradient;
+    background-size: 100% 100%;
+    background-position: top;
+    transition: background-size 0.3s ease-in-out;
+
+    &:hover {
+        background-size: 100% 200%;
+        transition: background-size 0.5s ease-in-out;
+        cursor: pointer;
+    }
+}
+
+@mixin text-gradient-full() {
+    background-image: $gradient;
+    background-size: 100% 100%;
+    background-position: top;
+    transition: background-size 0.3s ease-in-out;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    &:not(.no-hover):hover {
+        background-size: 100% 200%;
+        transition: background-size 0.5s ease-in-out;
+        cursor: pointer;
+    }
+}
+
+@mixin add-btn() {
+    @include gradient-full();
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    text-decoration: none;
+    line-height: 1;
+
+    i {
+        color: $white;
+        font-size: 30px;
+    }
+}
+
+@mixin header() {
+    display: flex;
+    align-items: center;
+    padding: 0 25px;
+    height: 70px;
+    background-color: $white;
+    box-shadow: 0px 4px 4px -4px rgba(0, 0, 0, 0.25);
+    position: relative;
+    z-index: 999;
+
+    h1 {
+        font-size: 35px;
+    }
+}
+
+@mixin button() {
+    height: 50px;
+    border-radius: 5px;
+    border: none;
+    padding: 0 20px;
+    background-color: $secondary;
+    font-family: $font-secondary;
+    font-size: 22px;
+    font-weight: 300;
+    margin-top: 10px;
+    line-height: 1;
+    transition: 0.3s ease;
+
+    &:hover {
+        background: $secondary-hover;
+        cursor: pointer;
+    }
+}
+
+@mixin modal() {
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(5px);
+    position: fixed;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: 0.3s ease;
+
+    &.active {
+        opacity: 1;
+        pointer-events: all;
+        visibility: visible;
+
+        .modal-content {
+            animation: fade-in 0.3s ease-in;
+        }
+    }
+
+    .modal-content {
+        background-color: $white;
+        padding: 30px;
+        border-radius: 5px;
+        animation: fade-out 0.3s ease-out;
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+
+            button {
+                border: none;
+                background-color: transparent;
+                color: $font-gray;
+                transition: 0.3s ease;
+
+                &:hover {
+                    color: $secondary;
+                }
+            }
+        }
+    }
+}
+
+@mixin logo() {
+    display: flex;
+    justify-content: center;
+    transform: scale(0.85);
+
+    .logo {
+        position: relative;
+        margin-bottom: 30px;
+
+        h1,
+        h2 {
+            line-height: 0.85;
+            font-size: 40px;
+            padding-bottom: 20px;
+            padding-left: 20px;
+            font-weight: 600;
+        }
+
+        .bottom {
+            width: 90px;
+            height: 10px;
+            background-color: $secondary;
+            bottom: 0;
+            left: 0;
+            position: absolute;
+        }
+
+        .left {
+            height: 90px;
+            width: 10px;
+            background-color: $secondary;
+            bottom: 0;
+            left: 0;
+            position: absolute;
+        }
+    }
+}
+
+@mixin image-bg() {
+    background: url("../../../public/images/examinator-logo.svg") center center
+        no-repeat;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+
+    .overlay {
+        width: 100%;
+        height: 100%;
+        background-color: rgba($color: #c1c1c1, $alpha: 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+@mixin no-list() {
+    height: calc(100vh - 70px);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fade-in 0.5s ease;
+
+    p {
+        color: $font-gray;
+        font-style: italic;
+    }
+}
+
+@mixin file-structure() {
+    position: relative;
+    padding: 0 0 5px 0;
+
+    &:last-child {
+        padding: 0;
+    }
+
+    &::before {
+        position: absolute;
+        left: -25px;
+        top: 0;
+        content: "";
+        width: 20px;
+        height: 12px;
+        border-bottom: 2px solid $gray;
+        transition: 0.3s ease;
+    }
+
+    &::after {
+        position: absolute;
+        left: -25px;
+        top: 0px;
+        border-left: 2px solid $gray;
+        content: "";
+        width: 20px;
+        height: calc(100% + 3px);
+        transition: 0.3s ease;
+    }
+
+    &:first-child {
+        &::after {
+            top: 2px;
+            height: calc(100% - 2px);
+        }
+    }
+
+    &:last-child::after {
+        height: 12px;
+        bottom: auto;
+        border-bottom: 2px solid $gray;
+        border-radius: 0 0 0 5px;
+    }
+
+    &:last-child::before {
+        display: none;
+    }
+}
+
+// Keyframes
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+        margin-top: -10px;
+    }
+    100% {
+        opacity: 1;
+        margin-top: 0;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+        margin-top: 0;
+    }
+    100% {
+        opacity: 0;
+        margin-top: -10px;
+    }
+}
+
+@keyframes customFadeInOut {
+    20% {
+        top: 40px;
+        opacity: 1;
+    }
+    80% {
+        top: 40px;
+        opacity: 1;
+    }
+    100% {
+        top: 0;
+        opacity: 0;
+    }
+}
