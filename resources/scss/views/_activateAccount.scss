@@ -1,157 +1,46 @@
-#activate-account {
-    height: 100vh;
-    max-width: 100vw;
+#activate-account{
+    @include image-bg();
     overflow: hidden;
-    position: relative;
 
-    .sphere {
-        &.middle {
-            top: 50%;
-            right: 20%;
-            transform: translate(-50%, -50%);
-            height: 50px;
-            width: 50px;
-        }
-
-        &.left {
-            bottom: -30px;
-            left: 30px;
-            height: 110px;
-            width: 110px;
-        }
-
-        &.top {
-            top: 10%;
-            left: 750px;
-            transform: translateY(-50%);
-            height: 70px;
-            width: 70px;
-        }
+    .overlay{
+        padding: 100px;
     }
 
-    .circle {
-        &.top-left {
-            background-image: linear-gradient($primary, $accent);
-            top: -150px;
-            left: -150px;
-            width: 350px;
-            height: 350px;
-
-            .inner-circle {
-                width: 260px;
-                height: 260px;
-            }
+        .logo-container{
+            @include logo();
+            position: absolute;
+            top: 35px;
+            left: 35px;
         }
 
-        &.bottom-right {
-            bottom: -200px;
-            left: 700px;
-            width: 400px;
-            height: 400px;
-            background-image: linear-gradient($accent, $primary);
+        .activate{
+            width: 100%;
 
-            .inner-circle {
-                background: $primary;
-                width: 320px;
-                height: 320px;
-            }
-        }
-
-        &.top-right {
-            top: -50px;
-            right: -80px;
-            width: 300px;
-            height: 300px;
-            background-image: linear-gradient($primary, $accent);
-
-            .inner-circle {
-                background: $primary;
-                width: 230px;
-                height: 230px;
-            }
-        }
-    }
-
-    .activate-form {
-        height: 100%;
-        background-color: $white;
-        width: 800px;
-        background: rgba(255, 255, 255, 0.4);
-        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-        backdrop-filter: blur(10px);
-        position: relative;
-        z-index: 999;
-        padding: 60px 100px;
-
-        .title {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            img {
-                height: 70px;
+            h1{
+                text-align: center;
                 margin-bottom: 20px;
             }
 
-            h1 {
-                font-size: 60px;
-                font-weight: 300;
-                line-height: 1;
-                margin-bottom: 40px;
-            }
-        }
-        
-        h2{
-            margin-bottom: 5px;
-        }
-
-        form {
-            .input {
-                @include fancy-input();
-            }
-
-            button {
-                @include button();
-                width: 100%;
-            }
-        }
-    }
-
-    .logo-container {
-        @include logo();
-        position: absolute;
-        top: 35px;
-        left: 22%;
-    }
-
-    .activate {
-        width: 100%;
-        padding: 150px;
-        border: 5px solid;
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        form {
-            .input-row {
-                @include input-row();
-            }
-
-            .input {
-                @include input();
-                input {
-                    padding: 20px;
+            form{
+                .input-row{
+                    @include input-row();
+                }
+    
+                .input{
+                    @include input();
+                    input{
+                        padding: 20px;
+                        height: 65px;
+                    }
+                }
+    
+                button{
+                    @include form-button();
                     height: 65px;
+                    margin-top: 5px;
+                    font-size: 20px;
                 }
             }
-
-            button {
-                @include button();
-                height: 65px;
-                margin-top: 5px;
-                font-size: 20px;
-            }
         }
-    }
+    
 }

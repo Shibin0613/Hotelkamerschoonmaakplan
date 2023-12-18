@@ -22,19 +22,21 @@
         <div id="sidebar">
             <div>
                 <div class="logo" id="logo">
-                    <img src="{{ asset('images/HSP-logo.png') }}" alt="Examinator Logo">
+                    <img src="images/HSP-logo.png" alt="HSP Logo">
                 </div>
                 <ul>
                     @if (Auth::user()->role === 1)
-                        <li><a class="link" href="/gebruikers" title="Gebruikers"><i class="fa-regular fa-user"></i></a></li>
-                        <li><a class="link" href="/templates" title="Templates"><i class="fa-regular fa-copy"></i></a></li>
+                        <li><a class="link" href="/planning" title="Planning"><i class="fa-solid fa-calendar-days"></i></a></li>
+                        <li><a class="link" href="/houses" title="Houses"><i class="fas fa-home"></i></a></li>
+                        <li><a class="link" href="/damages" title="Damages"><i class="fas fa-house-damage"></i></a></li>
+                        <li><a class="link" href="/gebruikers" title="Gebruikers"><i class="fas fa-user"></i></a></li>
+                    @else
+                    <li><a class="link" href="/planning" title="Planning"><i class="fa-solid fa-calendar-days"></i></a></li>
                     @endif
-                    <li><a class="link" href="/beoordelingen" title="Beoordelingen"><i class="fa-regular fa-file-lines"></i></a></li>
                 </ul>
             </div>
             <div>
                 <ul>
-                    <li><a class="link" href="/profiel" title="Profiel"><i class="fa-regular fa-user-circle"></i></a></li>
                     <li><a class="link" href="/logout" title="Uitloggen"><i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
                 </ul>
             </div>

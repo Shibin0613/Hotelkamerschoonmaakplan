@@ -27,174 +27,54 @@ class AuthController extends Controller
 
     public function loginPost(Request $request)
     {
-        $credetials = [
-            'email' => $request->email,
+        $inputs = [
+            'username' => $request->gebruikersnaam,
             'password' => $request->password,
         ];
 
-        if (Auth::attempt($credetials)) {
-            return redirect('/gebruikers');
+        if (Auth::attempt($inputs)) {
+            return redirect('/planning');
         }
 
-        return back()->with('error', 'het wachtwoord en of mail kloppen niet');
+        return back()->with('error', 'de gebruikersnaam en of het wachtwoord kloppen niet');
     }
     public function createAccount()
     {
-        $Crebonrs = Crebo::all();
-
-        return view('createAccount', compact('Crebonrs'));
+        return view('createAccount');
     }
 
     public function createAccountPost(Request $request)
     {
         $guid = bin2hex(openssl_random_pseudo_bytes(16));
-
+        
         $validatedData = $request->validate([
-            'email' => 'required|email', // Example validation rules for email
-            'role' => 'required',
+            'email' => 'required|email|unique:users', // Example validation rules for email
+            'telefoon' => 'digits:9',
         ], [
+            'email.unique' => 'Er is al een account met dit e-mailadres',
             'email.email' => 'Vul een geldig e-mailadres in',
-            'email.required' => 'Het e-mailadres moet nog ingevuld worden',
-            'role.required' => 'De rol moet geselecteerd worden',
+            'email.required' => 'Het e-mailadres is verplicht',
+            'telefoon.digits' => 'vul een geldig telefoonnr in',
             '*' => 'Deze velden moeten ingevuld worden',
         ]);
-
-        $users = new User([
+        
+        $user = new User([
             'email' => $validatedData['email'],
+            'telefoonnr' =>$validatedData['telefoon']
         ]);
 
-        //puur validatiecheck als de rol student is, dan zijn de crebo en of de crebo_nummer required
-        if ($request->role == 0) {
-            $validatedData = $request->validate([
-                'crebo' => 'required'
-            ], [
-                'crebo.required' => 'Crebonummer moet nog geselecteerd worden'
-            ]);
-            if ($request->crebo == 'new') {
-                $validatedData = $request->validate([
-                    'new_crebo_number' => 'required'
-                ], [
-                    'new_crebo_number.required' => 'Nieuwe Crebonummer moet nog ingevuld worden'
-                ]);
-            }
+        $user->email = $request->email;
+        $user->role = 0;
+        $user->telefoonnr = $request->telefoon;
+        $user->activation_key = $guid;
+
+        if ($user->save()) {
+
+            return back()->with('success', 'Er is een account gemaakt, en er is geprobeerd een mail te versturen naar ' . $user->email);
+        }else{
+            dd($user->errors());
         }
-
-        $users->email = $request->email;
-        $users->role = $request->role;
-        $users->activation_key = $guid;
-
-        if ($request->role == 0) {
-            if (isset($request->new_crebo_number)) {
-                $creboNumber = $request->new_crebo_number;
-
-                $crebo = Crebo::firstOrNew(['name' => $creboNumber]);
-                if (!$crebo->exists) {
-                    $crebo->name = $request->new_crebo_number;
-                    // The class doesn't exist, so save it
-                    $crebo->save();
-                } else {
-                    return back()->withErrors(['error' => 'Deze crebo bestaat al']);
-                }
-            }
-        }
-
-        if ($request->role == 1) {
-            // Validation: Check of de emailadres voor docent uniek is
-            $validatedData = $request->validate([
-                'email' => 'required|email|unique:users',
-            ], [
-                'email.unique' => 'Er is al een account voor een docent met dit e-mailadres',
-            ]);
-
-            if ($users->save()) {
-                $role = "docent";
-
-                try {
-                    $this->Sendmail($users->email, $users->activation_key, $role);
-                    Log::info('Email sent successfully to ' . $users->email);
-
-                    // return back()->with('success', 'Er is een account gemaakt, en er is geprobeerd een mail te versturen naar ' . $users->email);
-                } catch (\Exception $e) {
-                    Log::error('Email sending failed: ' . $e->getMessage());
-                    return back()->with('error', 'Er is een account gemaakt, maar er is een fout opgetreden bij het versturen van de activatiemail.');
-                }
-            } else {
-                dd($users->errors());
-            }
-        } elseif ($request->role == 0) {
-            // Check of de student-emailadres al bestaat
-            $existingUser = User::where('email', $request->email)->first();
-
-            if ($existingUser) {
-                // als hij al bestaat
-                $selectedUser = $existingUser->id;
-                $existingCreboUser = CreboUser::where('user_id', $selectedUser)->where('crebo_id', $request->crebo)->first();
-
-
-                if ($existingCreboUser) {
-                    return back()->withErrors(['error' => 'Deze student zit al in deze crebo']);
-                } else {
-                    // dan wordt de user_id opgehaald op basis van ingevulde emailadres
-                    $creboUser = new CreboUser([
-                        'crebo_id' => $request->crebo,
-                    ]);
-                    $creboUser->user_id = $existingUser->id;
-                    $creboUser->save();
-                }
-            } else { //anders wordt een nieuwe user aangemaakt
-                if ($users->save()) {
-                    if (($request->role == '0')) {
-                        //als het niet een nieuwe crebo is
-                        if (($request->crebo != 'new') && (isset($request->crebo))) {
-                            // Controleer of de student al in de crebo zit
-                            $lastUser = DB::table('users')->latest('id')->value('id');
-
-                            $existingCreboUser = CreboUser::where('user_id', $lastUser)->where('crebo_id', $request->crebo)->first();
-
-                            if ($existingCreboUser) {
-                                return back()->withErrors(['error' => 'Deze student zit al in deze crebo']);
-                            } else {
-                                $creboUser = new CreboUser([
-                                    'crebo_id' => $request->crebo,
-                                ]);
-                                $creboUser->crebo_id = $request->crebo;
-                                $creboUser->user_id = $lastUser;
-                                $creboUser->save();
-                            }
-                        } //anders wordt een nieuwe crebo toegevoegd
-                        elseif (($request->crebo = 'new') && isset($request->new_crebo_number)) {
-                            $creboUser = new CreboUser([
-                                'crebo_id' => $request->crebo,
-                            ]);
-                            $lastUser = DB::table('users')->latest('id')->value('id');
-                            $lastCrebo = DB::table('crebos')->latest('id')->value('id');
-                            $creboUser->crebo_id = $lastCrebo;
-                            $creboUser->user_id = $lastUser;
-                            $creboUser->save();
-                        }
-                    }
-                }
-
-                if ($users->role == 0) {
-                    $role = "student";
-                } else {
-                    $role = "docent";
-                }
-
-                try {
-                    $this->Sendmail($users->email, $users->activation_key, $role);
-                    Log::info('Email sent successfully to ' . $users->email);
-
-                    // return back()->with('success', 'Er is een account gemaakt, en er is geprobeerd een mail te versturen naar ' . $users->email);
-                } catch (\Exception $e) {
-                    Log::error('Email sending failed: ' . $e->getMessage());
-                    return back()->with('error', 'Er is een account gemaakt, maar er is een fout opgetreden bij het versturen van de activatiemail.');
-                }
-            }
-        } else {
-            dd($users->errors());
-        }
-        return redirect('gebruikers')->with('success', 'Gebruiker toegevoegd');
+        
     }
 
     public function sendMail($email, $code, $rol)
@@ -259,6 +139,23 @@ class AuthController extends Controller
         }
 
         return back()->withErrors('Account activeren mislukt');
+    }
+    
+    public function gebruikers()
+    {
+        $role0Users = DB::table('users')
+            ->where('role', 0)
+            ->whereNotNull('password')
+            ->orderBy('firstname')
+            ->get();
+
+        $emptyPasswordUsers = DB::table('users')
+            ->whereNull('password')
+            ->get();
+
+        $users = $role0Users->concat($emptyPasswordUsers);
+
+        return view('users', compact('users'));
     }
 
     

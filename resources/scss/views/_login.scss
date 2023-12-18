@@ -1,100 +1,29 @@
-#login {
-    height: 100vh;
-    max-width: 100vw;
+#login{
+    @include image-bg();
     overflow: hidden;
-    position: relative;
 
-    .sphere {
-        &.top {
-            top: 20px;
-            left: 550px;
-            transform: translateX(-50%);
-            height: 120px;
-            width: 120px;
+    .login-content{
+        width: 500px;
+
+        .logo-container{
+            @include logo();
         }
 
-        &.left {
-            bottom: 80px;
-            left: -30px;
-            height: 110px;
-            width: 110px;
-        }
-
-        &.middle {
-            top: 55%;
-            left: 70%;
-            transform: translate(-50%, -50%);
-            height: 40px;
-            width: 40px;
-        }
-    }
-
-    .circle {
-        &.top-right {
-            background-image: linear-gradient($primary, $accent);
-            top: -150px;
-            right: -150px;
-            width: 500px;
-            height: 500px;
-
-            .inner-circle {
-                width: 400px;
-                height: 400px;
-            }
-        }
-
-        &.bottom {
-            bottom: -200px;
-            left: 400px;
-            width: 400px;
-            height: 400px;
-            background-image: linear-gradient($accent, $primary);
-
-            .inner-circle {
-                background: $primary;
-                width: 320px;
-                height: 320px;
-            }
-        }
-    }
-
-    .login-form {
-        height: 100%;
-        background-color: $white;
-        width: 550px;
-        background: rgba(255, 255, 255, 0.4);
-        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-        backdrop-filter: blur(10px);
-        position: relative;
-        z-index: 999;
-        padding: 60px 70px;
-
-        .title {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            img {
-                height: 70px;
-                margin-bottom: 20px;
+        form{
+            .input{
+                @include input();
+                input{
+                    padding: 20px;
+                    height: 65px;
+                }
             }
 
-            h1 {
-                font-size: 60px;
-                font-weight: 300;
-                line-height: 1;
-                margin-bottom: 40px;
+            button{
+                @include form-button();
+                height: 65px;
+                margin-top: 5px;
+                font-size: 20px;
             }
-        }
-
-        .input {
-            @include fancy-input();
-        }
-
-        button {
-            @include button();
-            width: 100%;
-            height: 60px;
         }
     }
 }

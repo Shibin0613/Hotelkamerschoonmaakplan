@@ -1,0 +1,26 @@
+#add-user{
+    background-color: $primary;
+    min-height: 100vh;
+
+    .content-header{
+        @include content-header();
+    }
+
+    .add-user{
+        padding: 30px;
+
+        form{
+            .input-row{
+                @include input-row();
+            }
+    
+            .input{
+                @include input();
+            }
+
+            button{
+                @include form-button();
+            }
+        }
+    }
+}

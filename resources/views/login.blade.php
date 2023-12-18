@@ -1,53 +1,46 @@
 <!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Load Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <title>Login</title>
     @vite(['resources/scss/app.scss', 'resources/css/app.css', 'resources/js/app.js'])
-    <title>Hotelkamerschoonmaakplan - login</title>
 </head>
-
 <body>
-    <div id="login">
-        <div class="sphere top"></div>
-        <div class="sphere left"></div>
-        <div class="sphere middle"></div>
-        <div class="circle top-right">
-            <div class="inner-circle"></div>
-        </div>
-        <div class="circle bottom">
-            <div class="inner-circle"></div>
-        </div>
-        <div class="login-form">
-            <div class="title">
-                <img src="{{ asset('images/HSP-logo.png') }}" alt="Examinator Logo">
-                <h1>Hotelkamerschoonmaakplan</h1>
+<div id="login">
+    <div class="overlay">
+        <div class="login-content">
+            <div class="logo-container">
+                <div class="logo">
+                    <h1>Hotelkamer<br>schoonmaak<br>plan</h1>
+                    <div class="left"></div>
+                    <div class="bottom"></div>
+                </div>
             </div>
-            @if (Session::has('error'))
-                <div class="alert alert-danger" role="alert">
-                    {{ Session::get('error') }}
+            @if ($errors->any())
+                <div class="error-message">
+                    @foreach ($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
                 </div>
             @endif
-            <form action="{{ route('login') }}" method="POST">
+            <form action="{{ route('loginPost') }}" method="POST">
                 @csrf
                 <div class="input">
-                    <label for="email">Gebruikersnaam</label>
-                    <input type="email" name="email" id="email" placeholder="Vul hier je e-mailadres in...">
+                    <label for="gebruikersnaam">Gebruikersnaam</label>
+                    <input type="text" name="gebruikersnaam" id="gebruikersnaam" placeholder="Vul hier je gebruikersnaam in...">
                 </div>
                 <div class="input">
                     <label for="password">Wachtwoord</label>
                     <input type="password" name="password" id="password" placeholder="Vul hier je wachtwoord in...">
                 </div>
-                <button>Login</button>
+                <button type="submit">Log in</button>
+            </form>
         </div>
-        </form>
     </div>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</div>
 </body>
-
 </html>
