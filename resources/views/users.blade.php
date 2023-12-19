@@ -34,7 +34,7 @@
                         <p>{{ $user->email }}</p>
                         <div class="divider"></div>
                         @if ($user->role === 0)
-                            <p>Schoonmakers</p>
+                            <p>Schoonmaker</p>
                         @elseif ($user->role === 1)
                             <p>Beheerder</p>
                         @endif

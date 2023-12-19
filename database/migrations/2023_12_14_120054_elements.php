@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('elements', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('house_id');
             $table->string('name');
             $table->integer('time');
 
-            $table->foreign('house_id')->references('id')->on('houses');
         });
     }
 

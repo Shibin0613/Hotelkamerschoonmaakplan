@@ -3,11 +3,26 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PlanningController;
+use App\Http\Controllers\HouseController;
 
 use Illuminate\Support\Facades\Auth;
 
+Route::get('/', function () {
+    if (Auth::check()) {
+        if (Auth::user()->role === 1) {
+            return redirect()->route('plannig');
+        } elseif (Auth::user()->role === 0) {
+            return redirect()->route('planning');
+        }
+    } else {
+        return redirect()->route('login');
+    }
+});
+
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/loginPost', [AuthController::class, 'loginPost'])->name('loginPost');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
 
 Route::get('/planning', [PlanningController::class, 'planning'])->name('planning');
 
@@ -15,3 +30,8 @@ Route::get('/gebruikers', [AuthController::class, 'gebruikers'])->name('users');
 Route::get('/createAccount', [AuthController::class, 'createAccount'])->name('createAccount');
 
 Route::post('/createAccountPost', [AuthController::class, 'createAccountPost'])->name('createAccountPost');
+
+Route::get('/activateAccount', [AuthController::class, 'viewActivateAccount'])->name('activateAccount');
+Route::post('/activateAccount', [AuthController::class, 'activateAccountPost'])->name('activateAccountPost');
+
+Route::get('/houses', [HouseController::class, 'houses'])->name('houses');

@@ -60,7 +60,6 @@ class AuthController extends Controller
         
         $user = new User([
             'email' => $validatedData['email'],
-            'telefoonnr' =>$validatedData['telefoon']
         ]);
 
         $user->email = $request->email;
@@ -69,17 +68,24 @@ class AuthController extends Controller
         $user->activation_key = $guid;
 
         if ($user->save()) {
+            try {
+                $this->Sendmail($user->email, $user->activation_key);
+                Log::info('Email sent successfully to ' . $user->email);
 
-            return back()->with('success', 'Er is een account gemaakt, en er is geprobeerd een mail te versturen naar ' . $user->email);
+                return back()->with('success', 'Er is een account gemaakt, en er is geprobeerd een mail te versturen naar ' . $users->email);
+            } catch (\Exception $e) {
+                Log::error('Email sending failed: ' . $e->getMessage());
+                return back()->with('error', 'Er is een account gemaakt, maar er is een fout opgetreden bij het versturen van de activatiemail.');
+            }
         }else{
             dd($user->errors());
         }
-        
+        return redirect('createAccount')->with('success', 'Gebruiker toegevoegd');
     }
 
-    public function sendMail($email, $code, $rol)
+    public function sendMail($email, $code)
     {
-        Mail::to($email)->send(new Activation($code, $rol));
+        Mail::to($email)->send(new Activation($code));
     }
 
     public function logout()
@@ -104,7 +110,7 @@ class AuthController extends Controller
             return ("Account is al geactiveerd!");
             return error("Account is al geactiveerd!");
         } else {
-            return view('activateAccount');
+            return view('activateAccount', compact('user'));
         }
     }
 
@@ -113,10 +119,12 @@ class AuthController extends Controller
         $validatedData = $request->validate([
             'firstname' => 'required|string|min:2|max:255', // Example validation rules for voornaam
             'lastname' => 'required|string|min:2|max:255',
+            'username' => 'required|string|min:2|max:255',
             'password' => 'required|string|min:8|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*[\W_]).+$/',
         ], [
             'firstname.required' => 'De voornaam moet nog ingevuld worden',
             'lastname.required' => 'De achternaam moet nog ingevuld worden',
+            'username.required' => 'De gebruikersnaam moetnog ingevuld worden',
             'password.required' => 'Wachtwoord moet nog ingevuld worden',
             'password.regex' => 'Het wachtwoord moet ten minste 8 tekens bevatten, waaronder minimaal 1 kleine letter, 1 hoofdletter, 1 cijfer en 1 speciaal teken',
             'password.min' => 'Het wachtwoord moet ten minste 8 tekens bevatten, waaronder minimaal 1 kleine letter, 1 hoofdletter, 1 cijfer en 1 speciaal teken',
@@ -131,6 +139,7 @@ class AuthController extends Controller
         if ($user->update([
             'firstname' => $request->input('firstname'),
             'lastname' => $request->input('lastname'),
+            'username' => $request->input('username'),
             'password' => Hash::make($request->input('password')), // Hash the new password
         ])) {
             auth()->login($user);

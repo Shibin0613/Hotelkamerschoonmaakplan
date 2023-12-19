@@ -18,6 +18,25 @@
                 @include input();
             }
 
+            .input1{
+                margin-bottom: 15px;
+                label{
+                    display: block;
+                    margin-left: 20px;
+                    margin-bottom: 2px;
+                }
+                p{
+                    width:100%;
+                    input{
+                        border: 2px solid $white;
+                        width: 95%;
+                        padding: 15px;
+                        border-radius: 10px;
+                        background: transparent;
+                    }
+                }
+            }
+
             button{
                 @include form-button();
             }

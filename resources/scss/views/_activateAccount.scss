@@ -27,7 +27,40 @@
                 }
     
                 .input{
-                    @include input();
+                    width: 100%;
+                    margin-bottom: 15px;
+
+                    label{
+                        display: block;
+                        margin-left: 20px;
+                        margin-bottom: 2px;
+                    }
+                    
+                    p, input, textarea, select{
+                        border: 2px solid $white;
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        padding: 15px;
+                        border-radius: 10px;
+                        background: transparent;
+
+                        &::placeholder{
+                            color: $light-gray;
+                        }
+
+                        &:focus{
+                            outline: none;
+                        }
+                    }
+
+                    option{
+                        background-color: $primary;
+                    }
+
+                    textarea{
+                        min-height: 100px;
+                    }
                     input{
                         padding: 20px;
                         height: 65px;
