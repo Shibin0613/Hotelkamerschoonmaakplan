@@ -45,8 +45,6 @@ class AuthController extends Controller
 
     public function createAccountPost(Request $request)
     {
-        $guid = bin2hex(openssl_random_pseudo_bytes(16));
-        
         $validatedData = $request->validate([
             'email' => 'required|email|unique:users', // Example validation rules for email
             'telefoon' => 'digits:9',
@@ -57,30 +55,24 @@ class AuthController extends Controller
             'telefoon.digits' => 'vul een geldig telefoonnr in',
             '*' => 'Deze velden moeten ingevuld worden',
         ]);
+
+        $guid = bin2hex(openssl_random_pseudo_bytes(16));
         
         $user = new User([
             'email' => $validatedData['email'],
+            'role' => 0,
+            'telefoonnr' => $validatedData['telefoon'],
+            'activation_key' => $guid,
         ]);
 
-        $user->email = $request->email;
-        $user->role = 0;
-        $user->telefoonnr = $request->telefoon;
-        $user->activation_key = $guid;
-
-        if ($user->save()) {
-            try {
-                $this->Sendmail($user->email, $user->activation_key);
-                Log::info('Email sent successfully to ' . $user->email);
-
-                return back()->with('success', 'Er is een account gemaakt, en er is geprobeerd een mail te versturen naar ' . $users->email);
-            } catch (\Exception $e) {
-                Log::error('Email sending failed: ' . $e->getMessage());
-                return back()->with('error', 'Er is een account gemaakt, maar er is een fout opgetreden bij het versturen van de activatiemail.');
-            }
+        if($user->save()){
+            $this->sendMail($user->email, $user->activation_key);
+            return redirect('createAccount')->with('success', 'Gebruiker toegevoegd');
         }else{
-            dd($user->errors());
+            return redirect('createAccount')->with('error', 'Gebruiker toevoegen is mislukt');
         }
-        return redirect('createAccount')->with('success', 'Gebruiker toegevoegd');
+
+        
     }
 
     public function sendMail($email, $code)

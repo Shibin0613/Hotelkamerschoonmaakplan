@@ -35,3 +35,6 @@ Route::get('/activateAccount', [AuthController::class, 'viewActivateAccount'])->
 Route::post('/activateAccount', [AuthController::class, 'activateAccountPost'])->name('activateAccountPost');
 
 Route::get('/houses', [HouseController::class, 'houses'])->name('houses');
+
+Route::get('/createHouse', [HouseController::class, 'createHouse'])->name('createHouse');
+Route::post('/createHousePost', [AuthController::class, 'createHousePost'])->name('createHousePost');

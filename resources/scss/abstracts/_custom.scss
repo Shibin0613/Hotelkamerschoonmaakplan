@@ -341,7 +341,7 @@ i{
 }
 
 @mixin text-gradient-full() {
-    background-image: $gray;;
+    background-image: $gray;
     background-size: 100% 100%;
     background-position: top;
     transition: background-size 0.3s ease-in-out;

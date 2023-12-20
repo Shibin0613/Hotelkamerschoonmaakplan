@@ -19,11 +19,19 @@ class HouseController extends Controller
 {
     public function houses()
     {
-        $houses = HouseElements::with('house','elements')
-        ->get();
+        $houses = House::with('elements')->get();
 
-        dd($houses);
-        return view('houses');
+        return view('houses',compact('houses'));
+    }
+
+    public function createHouse()
+    {
+        return view('createHouse');
+    }
+
+    public function createHousePost()
+    {
+        return view('createHouse');
     }
 
 

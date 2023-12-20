@@ -23,6 +23,7 @@ class User extends Authenticatable
         'telefoonnr',
         'username',
         'password',
+        'activation_key',
         'role',
         'firstname',
         'lastname',

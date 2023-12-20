@@ -33,7 +33,11 @@
                         padding: 15px;
                         border-radius: 10px;
                         background: transparent;
+                        &::placeholder{
+                            color: $light-gray;
+                        }
                     }
+                    
                 }
             }
 

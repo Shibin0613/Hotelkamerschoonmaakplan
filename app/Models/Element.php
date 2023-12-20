@@ -13,14 +13,13 @@ class Element extends Model
 
 
     protected $fillable = [
-        'house_id',
         'name',
         'time',
     ];
 
-    public function house()
+    public function houses()
     {
-        return $this->belongsTo(House::class);
+        return $this->belongsToMany(House::class, 'house_elements');
     }
 
 }
