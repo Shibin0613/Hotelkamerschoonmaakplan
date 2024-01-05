@@ -17,7 +17,12 @@
                 <div class="info">
                     <p class="name">{{$house->name}}</p>
                     <div class="divider"></div>
-                    <p>{{count($house->elements)}} elements</p>
+                    @if ($house->elements !== Null)
+                        <p>{{ count(json_decode($house->elements, true) ?? []) }} elementen</p>
+                    @else
+                        <p>0 element</p>
+                    @endif
+                    <p></p>
                     <div class="divider"></div>
                 </div>
                 <div class="right">

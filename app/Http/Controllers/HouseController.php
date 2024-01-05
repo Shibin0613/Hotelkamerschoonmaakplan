@@ -19,7 +19,7 @@ class HouseController extends Controller
 {
     public function houses()
     {
-        $houses = House::with('elements')->get();
+        $houses = DB::table('houses')->get();
 
         return view('houses',compact('houses'));
     }
@@ -29,9 +29,27 @@ class HouseController extends Controller
         return view('createHouse');
     }
 
-    public function createHousePost()
+    public function createHousePost(Request $request)
     {
-        return view('createHouse');
+        $validatedData = $request->validate([
+            'name' => 'required|string|unique:houses', // Example validation rules for email
+        ], [
+            'name.unique' => 'Er is al een vakantiehuis/hotelkamer met deze naam',
+            'name.required' => 'De naam is verplicht',
+            '*' => 'Deze velden moeten ingevuld worden',
+        ]);
+
+        $elementsJson = json_encode($request->element);
+
+        $house = new House([
+            'name' => $validatedData['name'],
+            'elements'=> $elementsJson,
+        ]);
+        if($house->save()){
+            return redirect('houses')->with('success', 'Vakantiehuis/Hotelkamer toegevoegd');
+        }else{
+            return back()->with('error', 'Het is niet gelukt');
+        };
     }
 
 

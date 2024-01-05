@@ -37,4 +37,4 @@ Route::post('/activateAccount', [AuthController::class, 'activateAccountPost'])-
 Route::get('/houses', [HouseController::class, 'houses'])->name('houses');
 
 Route::get('/createHouse', [HouseController::class, 'createHouse'])->name('createHouse');
-Route::post('/createHousePost', [AuthController::class, 'createHousePost'])->name('createHousePost');
+Route::post('/createHousePost', [HouseController::class, 'createHousePost'])->name('createHousePost');

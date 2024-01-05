@@ -9,17 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class House extends Model
 {
     protected $table = 'houses';
+    
     use HasFactory;
-
 
     protected $fillable = [
         'name',
+        'elements',
     ];
-
-    public function elements()
-    {
-        return $this->belongsToMany(Element::class, 'house_elements');
-    }
 
     public function plannings(): HasMany 
     {

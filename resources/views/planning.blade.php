@@ -11,32 +11,9 @@
     </div>
 
   
-        <div class="users">
-                <div class="user">
-                    <div class="info">
-                        <p class="name"></p>
-                        <div class="divider"></div>
-                        <p></p>
-                        <div class="divider"></div>
-
-                    </div>
-                </div>
-            
-                <div class="user">
-                    <div class="info">
-                        <p></p>
-                        <div class="divider"></div>
-
-                    </div>
-                    <div class="clock">
-                        <i class="fa-regular fa-clock"></i>
-                    </div> 
-                </div>
-
-        </div>
     
         <div class="no-users">
-            <p>Er zijn geen gebruikers gevonden</p>
+            <p>Er staan geen planning</p>
         </div>
     
 </div>

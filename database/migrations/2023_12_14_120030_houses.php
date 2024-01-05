@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('houses', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->json('elements');
             $table->timestamps();
         });
     }
