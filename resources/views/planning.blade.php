@@ -7,8 +7,10 @@
     </div>
 
     <div class="add-user">
-        <a href="/createAccount"><i class="fa-solid fa-plus"></i></a>
+        <a href="/createPlanning"><i class="fa-solid fa-plus"></i></a>
     </div>
+
+    <div id="calendar"></div>
 
   
     

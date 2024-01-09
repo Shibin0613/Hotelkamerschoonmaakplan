@@ -25,6 +25,9 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 Route::get('/planning', [PlanningController::class, 'planning'])->name('planning');
+Route::get('/createPlanning', [PlanningController::class, 'createPlanning'])->name('createPlanning');
+Route::post('/createPlanningPost', [PlanningController::class, 'createPlanningPost'])->name('createPlanningPost');
+
 
 Route::get('/gebruikers', [AuthController::class, 'gebruikers'])->name('users');
 Route::get('/createAccount', [AuthController::class, 'createAccount'])->name('createAccount');

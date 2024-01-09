@@ -1,0 +1,48 @@
+#add-planning{
+    background-color: $primary;
+    min-height: 100vh;
+
+    .content-header{
+        @include content-header();
+    }
+
+    .add-planning{
+        padding: 30px;
+
+        form{
+            .input-row{
+                @include input-row();
+            }
+    
+            input, textarea, select{
+                border: 2px solid $white;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                padding: 15px;
+                border-radius: 10px;
+                background: transparent;
+        
+                &::placeholder{
+                    color: $light-gray;
+                }
+        
+                &:focus{
+                    outline: none;
+                }
+            }
+        
+            option{
+                background-color: $primary;
+            }
+        
+            textarea{
+                min-height: 100px;
+            }
+
+            button{
+                @include form-button();
+            }
+        }
+    }
+}

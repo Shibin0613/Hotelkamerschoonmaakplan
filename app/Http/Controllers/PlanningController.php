@@ -23,8 +23,16 @@ class PlanningController extends Controller
         return view('planning',compact('user'));
     }
 
+    public function createPlanning()
+    {
+        $houses = House::all();
+        foreach($houses as $house){
+            $elements[$house->id] = json_decode($house->elements);
+            
+        }
 
-    
+        return view('createPlanning', compact('houses','elements'));
+    }
 
     
 }
