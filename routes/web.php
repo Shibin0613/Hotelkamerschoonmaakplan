@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', function () {
     if (Auth::check()) {
         if (Auth::user()->role === 1) {
-            return redirect()->route('plannig');
+            return redirect()->route('planning');
         } elseif (Auth::user()->role === 0) {
             return redirect()->route('planning');
         }

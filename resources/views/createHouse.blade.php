@@ -26,7 +26,7 @@
                     <div class="slideshow-container">
                         <div class="element" style="display: block;">
                             <input type="text" name="element[1][name]" placeholder="Naam(Kleine wc)" maxlength="20">
-                            <input type="text" name="element[1][time]" placeholder="Tijd (10 minuten)" maxlength="20">
+                            <input type="int" name="element[1][time]" placeholder="Tijd (10 minuten)" maxlength="20">
                             <i class="fa-solid fa-minus removeElement"></i>
                         </div>
                     </div>
@@ -121,8 +121,8 @@
     function addSlide() {
         elementCounter++;
         let newElement = $('<div class="element" style="display: none;">' +
-            '<input type="text" name="element[' + elementCounter + '][name]" placeholder="Naam(Kleine wc)" maxlength="20">' +
-            '<input type="text" name="element[' + elementCounter + '][time]" placeholder="Tijd (10 minuten)" maxlength="20">' +
+            '<input type="text" name="element[' + elementCounter + '][name]" placeholder="Naam(Keuken)" maxlength="20">' +
+            '<input type="text" name="element[' + elementCounter + '][time]" placeholder="Tijd (20 minuten)" maxlength="20">' +
             '<i class="fa-solid fa-minus removeElement"></i>' +
             '</div>');
 
