@@ -45,10 +45,9 @@
                 </div>
                 <div id = "options">
                     @foreach ($cleaners as $cleaner)
-                    <label>
-                        <input type="checkbox" name="schoonmakers[]" value="{{$cleaner->id}}">
-                        {{$cleaner->firstname}}
-                    </label>
+                        <label>
+                            {{$cleaner->firstname}}<input type="checkbox" name="schoonmakers[]" value="{{$cleaner->id}}">
+                        </label>
                     @endforeach
                 </div>
             </div>
@@ -64,10 +63,11 @@
                             <input type="int" name="decoration[1][time]" placeholder="Tijd (10 minuten)" maxlength="20">
                             <i class="fa-solid fa-minus removeElement"></i>
                         </div>
+                        <a class="prev" id="prevBtn" style="display: none;" onclick="navigateElements(-1)">❮</a>
+                        <a class="next" id="nextBtn" style="display: none;" onclick="navigateElements(1)">❯</a>
                     </div>
                 </div>
-                <a class="prev" id="prevBtn" style="display: none;" onclick="navigateElements(-1)">❮</a>
-                <a class="next" id="nextBtn" style="display: none;" onclick="navigateElements(1)">❯</a>
+                
             </div>
             <div style="text-align:center">
                 <div id="dotContainer"></div>

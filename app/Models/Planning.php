@@ -25,7 +25,7 @@ class Planning extends Model
 
     public function cleaners()
     {
-        return $this->belongsToMany(User::class, 'planning_cleaner', 'planning_id', 'user_id');
+        return $this->belongsToMany(User::class, 'planning_cleaner', 'planning_id', 'cleaner_id');
     }
 
 }

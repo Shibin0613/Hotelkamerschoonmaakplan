@@ -30,7 +30,21 @@ class PlanningController extends Controller
         ->where('role', 0)
         ->whereNotNull('password')
         ->get();
+
+
+        $users = User::with('planning')
+            ->where('role', 0)
+            ->whereHas('planning', function ($query) {
+                $query->where('status', 0);
+            })
+            ->get();
+
         
+        foreach($users as $user)
+        {
+            dd($user->planning->status);
+        }
+
         foreach($houses as $house){
             $elements[$house->id] = json_decode($house->elements);
             
