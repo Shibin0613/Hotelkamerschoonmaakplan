@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Extradecoration extends Model
 {
     protected $table = 'extradecoration';
+    public $timestamps = false;
     use HasFactory;
 
 

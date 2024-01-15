@@ -19,8 +19,10 @@ class PlanningController extends Controller
     public function planning()
     {
         $user = Auth::user();
+
+        $planningen = Planning::with('house','cleaners')->get();
         
-        return view('planning',compact('user'));
+        return view('planning', compact('user','planningen'));
     }
 
     public function createPlanning()
@@ -83,10 +85,18 @@ class PlanningController extends Controller
             
                 $planningCleaner->save();
             }
+
+            foreach ($request->decoration as $decoration) {
+                $decoration = new Extradecoration([
+                    'planning_id' => $planningid,
+                    'name' => $decoration['name'],
+                    'time' => $decoration['time'],
+                ]);
+            
+                $decoration->save();
+            }
             return back();
         }
-
-        
             
     }
 

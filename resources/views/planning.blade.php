@@ -11,6 +11,15 @@
     </div>
     @endif
 
+    <p>
+    @foreach($planningen as $planning)
+    Datum {{$planning->datetime}}
+
+    $json = json_decode($planning->element)
+    Hotelnaam {{$planning->house->name}}
+    
+    @endforeach
+    </p>
     <div id="calendar"></div>
     
 </div>

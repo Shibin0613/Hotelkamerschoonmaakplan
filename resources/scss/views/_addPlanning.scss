@@ -42,6 +42,7 @@
 
             button{
                 @include form-button();
+                margin-top: 25px;
             }
         }
     }
@@ -55,10 +56,10 @@
     .prev, .next {
         cursor: pointer;
         position: absolute;
-        top: 70%;
+        top: 100%;
         width: auto;
         padding: 16px;
-        margin-top: -22px;
+        margin-top: -10px;
         color: white;
         font-weight: bold;
         font-size: 18px;

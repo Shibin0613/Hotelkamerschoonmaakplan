@@ -41,7 +41,7 @@
             <div class="alert alert-danger">{{ $message }}</div>
             @enderror
             
-            <button>Account aanmaken</button>
+            <button>Huis aanmaken</button>
         </form>
     </div>
 </div>

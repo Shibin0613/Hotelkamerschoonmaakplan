@@ -119,10 +119,16 @@ $(document).ready(function () {
         if (elements[selectedHouseId]) {
             const selectedHouseElements = Object.values(elements[selectedHouseId]);
 
+            let elementCounter = 0;
             // Check if it's an array before creating checkboxes
             if (Array.isArray(selectedHouseElements)) {
                 selectedHouseElements.forEach(function (element) {
-                    const checkbox = $(`<label>${element.name} ${element.time} minuten <input type="checkbox" checked name="selected_elements[]" value="${element.name} ${element.time}"></label>`);
+
+                    elementCounter++;
+
+                    const checkbox = $(`<label>${element.name} ${element.time} minuten` +
+                    `<input type="checkbox" checked ` + 'name="selected_elements[' + elementCounter + '][name]"' + `value="${element.name}">` + 
+                    `<input hidden ` + 'name="selected_elements[' + elementCounter + '][time]"' + ` value="${element.time}"></label>`);
                     
                     elementCheckboxes.append('&nbsp').append(checkbox).append('&nbsp');
                 });
@@ -204,13 +210,13 @@ let currentElement = 1;
         });
     });
 
-    let elementCounter = 1;
-
+    let decorationCounter = 1;
+    
     function addSlide() {
-        elementCounter++;
+        decorationCounter++;
         let newElement = $('<div class="element" style="display: none;">' +
-            '<input type="text" name="element[' + elementCounter + '][name]" placeholder="Naam(Verjaardagsdecoratie)" maxlength="20">' +
-            '<input type="int" name="element[' + elementCounter + '][time]" placeholder="Tijd (15 minuten)" maxlength="20">' +
+            '<input type="text" name="decoration[' + decorationCounter + '][name]" placeholder="Naam(Verjaardagsdecoratie)" maxlength="20">' +
+            '<input type="int" name="decoration[' + decorationCounter + '][time]" placeholder="Tijd (15 minuten)" maxlength="20">' +
             '<i class="fa-solid fa-minus removeElement"></i>' +
             '</div>');
 
