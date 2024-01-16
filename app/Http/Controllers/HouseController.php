@@ -46,7 +46,7 @@ class HouseController extends Controller
             'elements'=> $elementsJson,
         ]);
         if($house->save()){
-            return redirect('houses')->with('success', 'Vakantiehuis/Hotelkamer toegevoegd');
+            return back()->with('success', 'Vakantiehuis/Hotelkamer toegevoegd');
         }else{
             return back()->with('error', 'Het is niet gelukt');
         };

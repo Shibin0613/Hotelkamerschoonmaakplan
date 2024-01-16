@@ -13,19 +13,125 @@
 
     <p>
     @foreach($planningen as $planning)
-    Datum {{$planning->datetime}}
-
-    $json = json_decode($planning->element)
-    Hotelnaam {{$planning->house->name}}
-    
+    {{$planning->house->name}}
+    Datum: {{$planning->datetime}}
+    Element: 
+    @foreach(json_decode($planning->element) as $element)
+    {{$element->name}} {{$element->time}} minuten<input type="checkbox">
     @endforeach
+    @if(Auth::user()->role === 1)
+    <a href="{{ route('editPlanning', ['planningId' => $planning->id]) }}" title="wijzig planning"><i class="fa-regular fa-pen-to-square"></i></a> <i class="fa-regular fa-square-plus"></i>
+    @elseif(Auth::user()->role === 0)
+    <i class="fa-regular fa-square-check"></i>
+    @endif
+    <label>
+      Nood?
+      <input type="checkbox">
+      Status:
+      @if($planning->status === 0)
+        oranje
+      @elseif($planning->status === 1)
+        @if(!isset($planning->damage))
+        groen
+        @else
+          rood
+        @endif
+      @endif
+      
+      Schoonmakers:
+      @foreach($planning->cleaners as $cleaner)
+      {{$cleaner->firstname}} {{$cleaner->lastname}}
+      @endforeach
+      @endforeach
+    </label>
     </p>
     <div id="calendar"></div>
     
 </div>
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.1/moment-with-locales.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
+  let currentElement = 1;
+
+// Initialize dot container
+updateDotIndicators(currentElement, 1);
+
+function navigateElements(n) {
+    showElement(currentElement += n);
+}
+
+function showElement(n) {
+    let elements = document.getElementsByClassName("element");
+    if (n > elements.length) {
+        currentElement = elements.length;
+    }
+    if (n < 1) { currentElement = 1; }
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].style.display = "none";
+    }
+    elements[currentElement - 1].style.display = "block";
+    updateDotIndicators(currentElement, elements.length);
+
+    // Toon of verberg navigatieknoppen op basis van de huidige slide
+    let prevBtn = document.getElementById("prevBtn");
+    let nextBtn = document.getElementById("nextBtn");
+    if (currentElement === 1) {
+        prevBtn.style.display = "none";
+    } else {
+        prevBtn.style.display = "block";
+    }
+    if (currentElement === elements.length) {
+        nextBtn.style.display = "none";
+    } else {
+        nextBtn.style.display = "block";
+    }
+}
+
+function updateDotIndicators(current, total) {
+    let dotContainer = document.getElementById("dotContainer");
+    if (dotContainer) {
+        dotContainer.innerHTML = ""; // Clear existing dots
+
+        for (let i = 1; i <= total; i++) {
+            let dot = document.createElement("span");
+            dot.className = "dot";
+            dot.onclick = function () { currentSlide(i); };
+            dotContainer.appendChild(dot);
+
+            if (i === current) {
+                dot.className += " active";
+            }
+        }
+    }
+}
+  $(document).ready(function () {
+        // Voeg extra decoratie toe
+        $('#addDecoration').on("click", function () {
+            addSlide();
+            showElement(++currentElement);
+        });
+
+        // Verwijder element
+        $('#elementsContainer').on("click", ".removeElement", function () {
+            $(this).closest('.element').remove();
+            showElement(currentElement);
+        });
+    });
+
+    let damageCounter = 1;
+    
+    function addSlide() {
+        damageCounter++;
+        let newElement = $('<div class="element" style="display: none;">' +
+            '<input type="text" name="damge[' + damageCounter + '][name]" placeholder="Wat gebeurt er?" maxlength="0">' +
+            '<i class="fa-solid fa-minus removeElement"></i>' +
+            '</div>');
+
+        $('#elementsContainer .slideshow-container').append(newElement);
+    }
+
+//agenda(moment.js)
     !function() {
 
 var today = moment();

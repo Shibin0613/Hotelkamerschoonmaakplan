@@ -20,7 +20,7 @@ class PlanningController extends Controller
     {
         $user = Auth::user();
 
-        $planningen = Planning::with('house','cleaners')->get();
+        $planningen = Planning::with('house','cleaners','damage')->get();
         
         return view('planning', compact('user','planningen'));
     }
@@ -95,9 +95,32 @@ class PlanningController extends Controller
             
                 $decoration->save();
             }
-            return back();
+            return back()->with('success', 'Planning is aangemaakt');
+        }else{
+            return back()->with('error', 'Planning is niet aangemaakt.');
+
+        }  
+    }
+
+    public function editPlanning($planningId)
+    {
+        $planning = Planning::with('house', 'cleaners','decorations')
+        ->where('id', $planningId)
+        ->get();
+        
+        $houses = House::all();
+        
+        $cleaners = User::with('planning')
+        ->where('role', 0)
+        ->whereNotNull('password')
+        ->get();
+
+
+        foreach($houses as $house){
+            $elements[$house->id] = json_decode($house->elements);
         }
-            
+
+        return view('editPlanning', compact('planning','houses','cleaners','elements'));
     }
 
     

@@ -28,4 +28,13 @@ class Planning extends Model
         return $this->belongsToMany(User::class, 'planning_cleaner', 'planning_id', 'cleaner_id');
     }
 
+    public function damage()
+    {
+        return $this->HasMany(Damage::class);
+    }
+
+    public function decorations()
+    {
+        return $this->HasMany(Extradecoration::class);
+    }
 }

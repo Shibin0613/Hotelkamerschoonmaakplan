@@ -21,8 +21,10 @@
             <div class="input" id="houseSelect">
                 <label for="house">Vakantiehuis/Hotelkamer</label>
                 <select name="house" id="house" required>
-                    <option hidden selected disabled>Selecteer een vakantiehuis/hotelkamer</option>
-                    @foreach ($houses as $house)
+                    @foreach($planning as $planning)
+                    <option hidden selected disabled>{{$planning->house->name}}</option>
+                    @endforeach
+                    @foreach ($houses as $house)  
                         <option value="{{ $house->id }}">{{ $house->name }}</option>
                     @endforeach
                 </select>
@@ -38,7 +40,7 @@
             </div>
             <div class="input" id="houseSelect">
                 <label for="house">Datum en tijd</label>
-                    <input type="datetime-local" name="datetime">
+                    <input type="datetime-local" name="datetime" value="{{$planning->datetime}}">
             </div>
             @error('datum')
             <div class="alert alert-danger">{{ $message }}</div>
@@ -49,9 +51,14 @@
                     Selecteer aantal schoonmakers
                 </div>
                 <div id = "options">
+                    @foreach($planning->cleaners as $cleaner)
+                    <label>
+                    {{$cleaner->firstname}}<input id="input-row" type="checkbox" checked name="schoonmakers[]" value="{{$cleaner->id}}">
+                    </label>
+                    @endforeach
                     @foreach ($cleaners as $cleaner)
                         <label>
-                            {{$cleaner->firstname}}<input id="input-row"  type="checkbox" name="schoonmakers[]" value="{{$cleaner->id}}">
+                            {{$cleaner->firstname}}<input id="input-row" type="checkbox" name="schoonmakers[]" value="{{$cleaner->id}}">
                         </label>
                     @endforeach
                 </div>
@@ -64,9 +71,11 @@
                 <div id="elementsContainer" class="elements-container">
                     <div class="slideshow-container">
                         <div class="element" style="display: block;">
-                            <input type="text" name="decoration[1][name]" placeholder="Naam(Pasendecoratie)" maxlength="20">
-                            <input type="int" name="decoration[1][time]" placeholder="Tijd (10 minuten)" maxlength="20">
+                        @foreach($planning->decorations as $decoration)
+                            <input type="text" name="decoration[1][name]" placeholder="Naam(Pasendecoratie)" maxlength="20" value="{{$decoration->name}}">
+                            <input type="int" name="decoration[1][time]" placeholder="Tijd (10 minuten)" maxlength="20" value="{{$decoration->time}}">
                             <i class="fa-solid fa-minus removeElement"></i>
+                        @endforeach
                         </div>
                         <a class="prev" id="prevBtn" style="display: none;" onclick="navigateElements(-1)">❮</a>
                         <a class="next" id="nextBtn" style="display: none;" onclick="navigateElements(1)">❯</a>
@@ -78,7 +87,7 @@
                 <div id="dotContainer"></div>
             </div>
             
-            <button>Plan in</button>
+            <button>Update Planning</button>
         </form>
     </div>
 </div>

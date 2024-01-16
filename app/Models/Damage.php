@@ -26,4 +26,8 @@ class Damage extends Model
         return $this->belongsTo(Planning::class);
     }
 
+    public function house()
+    {
+        return $this->belongsTo(House::class);
+    }
 }

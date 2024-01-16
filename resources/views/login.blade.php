@@ -20,11 +20,9 @@
                     <div class="bottom"></div>
                 </div>
             </div>
-            @if ($errors->any())
-                <div class="error-message">
-                    @foreach ($errors->all() as $error)
-                        <p>{{ $error }}</p>
-                    @endforeach
+            @if (Session::has('error'))
+                <div class="alert alert-danger" role="alert">
+                    {{ Session::get('error') }}
                 </div>
             @endif
             <form action="{{ route('loginPost') }}" method="POST">

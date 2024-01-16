@@ -67,9 +67,9 @@ class AuthController extends Controller
 
         if($user->save()){
             $this->sendMail($user->email, $user->activation_key);
-            return redirect('createAccount')->with('success', 'Gebruiker toegevoegd');
+            return back()->with('success', 'Gebruiker toegevoegd');
         }else{
-            return redirect('createAccount')->with('error', 'Gebruiker toevoegen is mislukt');
+            return back()->with('error', 'Gebruiker toevoegen is mislukt.');
         }
 
         
@@ -139,7 +139,7 @@ class AuthController extends Controller
             return redirect('/'); // terugsturen naar login pagina
         }
 
-        return back()->withErrors('Account activeren mislukt');
+        return back()->with('error', 'Gebruiker activeren mislukt.');
     }
     
     public function gebruikers()
