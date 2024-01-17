@@ -1,11 +1,11 @@
 @extends('layout/app')
 
 @section('content')
-<div id="add-planning">
+<div id="edit-planning">
     <div class="content-header">
         <h1>Inplannen</h1>
     </div>
-    <div class="add-planning">
+    <div class="edit-planning">
         @if(Session::has('success'))
         <div class="success-message" role="alert">
             {{ Session::get('success') }}
@@ -56,9 +56,9 @@
                     {{$cleaner->firstname}}<input id="input-row" type="checkbox" checked name="schoonmakers[]" value="{{$cleaner->id}}">
                     </label>
                     @endforeach
-                    @foreach ($cleaners as $cleaner)
+                    @foreach ($cleanersNotInPlanning as $cleanerNotInPlanning)
                         <label>
-                            {{$cleaner->firstname}}<input id="input-row" type="checkbox" name="schoonmakers[]" value="{{$cleaner->id}}">
+                            {{$cleanerNotInPlanning->firstname}}<input id="input-row" type="checkbox" name="schoonmakers[]" value="{{$cleanerNotInPlanning->id}}">
                         </label>
                     @endforeach
                 </div>

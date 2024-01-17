@@ -29,7 +29,7 @@ Route::get('/createPlanning', [PlanningController::class, 'createPlanning'])->na
 Route::post('/createPlanningPost', [PlanningController::class, 'createPlanningPost'])->name('createPlanningPost');
 
 Route::get('/editPlanning/{planningId}', [PlanningController::class, 'editPlanning'])->name('editPlanning');
-
+Route::put('/updatePlanning/{planningId}', [PlanningController::class, 'updatePlanning'])->name('updatePlanning');
 
 
 Route::get('/gebruikers', [AuthController::class, 'gebruikers'])->name('users');

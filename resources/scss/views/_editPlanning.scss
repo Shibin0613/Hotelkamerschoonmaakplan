@@ -1,4 +1,4 @@
-#add-planning{
+#edit-planning{
     background-color: $primary;
     min-height: 100vh;
 
@@ -6,7 +6,7 @@
         @include content-header();
     }
 
-    .add-planning{
+    .edit-planning{
         padding: 30px;
 
         form{

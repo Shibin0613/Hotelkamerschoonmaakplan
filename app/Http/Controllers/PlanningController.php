@@ -20,7 +20,8 @@ class PlanningController extends Controller
     {
         $user = Auth::user();
 
-        $planningen = Planning::with('house','cleaners','damage')->get();
+        $planningen = Planning::with('house','cleaners','damage')
+        ->get();
         
         return view('planning', compact('user','planningen'));
     }
@@ -58,8 +59,11 @@ class PlanningController extends Controller
     public function createPlanningPost(Request $request)
     {
         $validatedData = $request->validate([
-            
+            'house' => 'required|numeric|exists:houses,id',
+            'datetime' => 'required|date_format:Y-m-d H:i:s',
         ], [
+            'datetime.datetime' => 'Vul in als waarde: datum tijd',
+            'house.exists' => 'Dit vakantiehuis/hotelkamer bestaat niet',
             '*' => 'Deze velden moeten ingevuld worden',
         ]);
 
@@ -107,7 +111,19 @@ class PlanningController extends Controller
         $planning = Planning::with('house', 'cleaners','decorations')
         ->where('id', $planningId)
         ->get();
+
+        $planningNotFind = Planning::find($planningId);
+
+        if (!$planningNotFind) {
+            //Voor het geval als de planning niet te vinden is
+            return back()->with('error', 'Planning is niet te vinden.');
+        };
         
+        $cleanersNotInPlanning = User::whereDoesntHave('planning')
+        ->whereNotNull('password')
+        ->where('role', 0)
+        ->get();
+
         $houses = House::all();
         
         $cleaners = User::with('planning')
@@ -115,12 +131,54 @@ class PlanningController extends Controller
         ->whereNotNull('password')
         ->get();
 
-
         foreach($houses as $house){
             $elements[$house->id] = json_decode($house->elements);
         }
 
-        return view('editPlanning', compact('planning','houses','cleaners','elements'));
+        return view('editPlanning', compact('cleanersNotInPlanning','planning','houses','cleaners','elements'));
+    }
+
+    public function updatePlanning(Request $request, $planningId)
+    {
+
+        dd($request);
+        $request->validate([
+            'house' => 'required|numeric|exists:houses,id',
+            'datetime' => 'required|date_format:Y-m-d H:i:s',
+          ], [
+            'datetime.datetime' => 'Vul in als waarde datum tijd',
+            'house.exists' => 'Dit vakantiehuis/hotelkamer bestaat niet',
+            '*' => 'Dit veld moet ingevuld worden',
+          ]);
+
+        $planning = Planning::find($planningId);
+
+        if (!$planning) {
+        //Voor het geval als de planning niet te vinden is
+        return redirect('planning')->with('error', 'Planning is niet te vinden.');
+    }
+
+        $selected_elements = json_encode($request->input('selected_elements'));
+
+        $decorations = json_encode($request->input('decoration'));
+
+        $planning->cleaners()
+        ->whereNotIn('id', array_keys($request->schoonmakers))
+        ->get()
+        ->each(function ($schoonmakers) {
+            // Delete the cleaners along with its related data
+            $schoonmakers->delete();
+        });
+
+        $planning->decorations()
+        ->whereNotIn('id', array_keys($request->decoration))
+        ->get()
+        ->each(function ($extraDecoration) {
+            // Delete the cleaners along with its related data
+            $extraDecoration->delete();
+        });
+
+
     }
 
     

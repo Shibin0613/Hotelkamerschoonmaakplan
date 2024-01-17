@@ -17,6 +17,7 @@ class PlanningCleaner extends Model
         'planning_id',
         'cleaner_id',
     ];
+    
     public function cleaner()
     {
         return $this->belongsTo(User::class);

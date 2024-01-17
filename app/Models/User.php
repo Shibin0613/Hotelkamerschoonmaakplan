@@ -51,6 +51,7 @@ class User extends Authenticatable
     
     public function planning()
     {
-        return $this->belongsToMany(Planning::class, 'planning_cleaner', 'planning.id', 'cleaner_id');
+        return $this->belongsToMany(Planning::class, 'planning_cleaner', 'cleaner_id', 'planning_id');
     }
+
 }
