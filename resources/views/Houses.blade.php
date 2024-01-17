@@ -26,7 +26,7 @@
                     <div class="divider"></div>
                 </div>
                 <div class="right">
-                    <i class="fa-solid fa-pen-to-square"></i>
+                    <a href="{{ route('editHouse', ['houseId' => $house->id]) }}"><i class="fa-solid fa-pen-to-square"></i></a>
                     <i class="fa-solid fa-trash-can"></i>
                 </div>
             </div>

@@ -16,12 +16,12 @@
             {{ Session::get('error') }}
         </div>
         @endif
-        <form action="{{ route('createPlanningPost') }}" method="POST">
+        @foreach($planning as $planning)
+        <form action="{{ route('updatePlanning', ['planningId' => $planning->id]) }}" method="POST">
             @csrf
             <div class="input" id="houseSelect">
                 <label for="house">Vakantiehuis/Hotelkamer</label>
                 <select name="house" id="house" required>
-                    @foreach($planning as $planning)
                     <option hidden selected disabled>{{$planning->house->name}}</option>
                     @endforeach
                     @foreach ($houses as $house)  
@@ -32,6 +32,12 @@
             @error('house')
             <div class="alert alert-danger">{{ $message }}</div>
             @enderror
+            <div class="input" id="element-input">
+                <label for="element">Elements</label>
+                <div id="element-checkboxes">
+                    <!-- Checkboxes will be dynamically added here based on the selected house -->
+                </div>
+            </div>
             <div class="input d-none" id="element-input">
                 <label for="element">Elements</label>
                 <div id="element-checkboxes">
@@ -121,7 +127,7 @@ $(document).ready(function () {
     const houseSelect = $('#house');
     const elementInput = $('#element-input');
     const elementCheckboxes = $('#element-checkboxes');
-
+    
     houseSelect.on('change', function () {
         const selectedHouseId = $(this).val();
         const elements = @json($elements);

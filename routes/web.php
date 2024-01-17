@@ -31,6 +31,9 @@ Route::post('/createPlanningPost', [PlanningController::class, 'createPlanningPo
 Route::get('/editPlanning/{planningId}', [PlanningController::class, 'editPlanning'])->name('editPlanning');
 Route::put('/updatePlanning/{planningId}', [PlanningController::class, 'updatePlanning'])->name('updatePlanning');
 
+Route::get('/editHouse/{houseId}', [HouseController::class, 'editHouse'])->name('editHouse');
+Route::post('/updateHouse/{houseId}', [HouseController::class, 'updateHouse'])->name('updateHouse');
+
 
 Route::get('/gebruikers', [AuthController::class, 'gebruikers'])->name('users');
 Route::get('/createAccount', [AuthController::class, 'createAccount'])->name('createAccount');

@@ -52,8 +52,35 @@ class HouseController extends Controller
         };
     }
 
-
+    public function editHouse($houseId)
+    {
+        $house = DB::table('houses')
+        ->where('id', $houseId)
+        ->get();
+        
+        return view('editHouse', compact('house'));
+    }
     
+    public function updateHouse(Request $request, $houseId)
+    {
+        dd($request);
+        if(empty($request->name))
+        {
+           $house =DB::table('houses')
+           ->where('id', $houseId)
+           ->get();
+            $request->name = $house->name; 
+        }
+        
+        
+        $house = House::find($houseId);
+
+        if (!$houseId) {
+            //Voor het geval als de planning niet te vinden is
+            return redirect('houses')->with('error', 'Vakantiehuis/hotelkamer is niet te vinden.');
+        }
+        
+    }
 
     
 }

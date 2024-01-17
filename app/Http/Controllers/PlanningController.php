@@ -154,9 +154,9 @@ class PlanningController extends Controller
         $planning = Planning::find($planningId);
 
         if (!$planning) {
-        //Voor het geval als de planning niet te vinden is
-        return redirect('planning')->with('error', 'Planning is niet te vinden.');
-    }
+            //Voor het geval als de planning niet te vinden is
+            return redirect('planning')->with('error', 'Planning is niet te vinden.');
+        }
 
         $selected_elements = json_encode($request->input('selected_elements'));
 
