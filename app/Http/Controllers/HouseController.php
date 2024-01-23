@@ -54,16 +54,24 @@ class HouseController extends Controller
 
     public function editHouse($houseId)
     {
+
+        $houseNotFind = House::find($houseId);
+
+        if (!$houseNotFind) {
+            //Voor het geval als de planning niet te vinden is
+            return back()->with('error', 'Vakantiehuis/hotelkamer is niet te vinden.');
+        }
+        
         $house = DB::table('houses')
         ->where('id', $houseId)
         ->get();
         
         return view('editHouse', compact('house'));
-    }
+        }
     
     public function updateHouse(Request $request, $houseId)
     {
-        dd($request);
+        
         if(empty($request->name))
         {
            $house =DB::table('houses')

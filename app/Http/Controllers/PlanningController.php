@@ -42,12 +42,6 @@ class PlanningController extends Controller
             })
             ->get();
 
-        
-        foreach($users as $user)
-        {
-            dd($user->planning->status);
-        }
-
         foreach($houses as $house){
             $elements[$house->id] = json_decode($house->elements);
             
@@ -140,8 +134,6 @@ class PlanningController extends Controller
 
     public function updatePlanning(Request $request, $planningId)
     {
-
-        dd($request);
         $request->validate([
             'house' => 'required|numeric|exists:houses,id',
             'datetime' => 'required|date_format:Y-m-d H:i:s',

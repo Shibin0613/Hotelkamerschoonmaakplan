@@ -189,9 +189,9 @@ Calendar.prototype.drawMonth = function() {
   var self = this;
   
   this.events.forEach(function(ev) {
-   ev.date = self.current.clone().date(Math.random() * (29 - 1) + 1);
+    // Set the event date based on the actual date from the database
+    ev.date = moment(ev.date);
   });
-  
   
   if(this.month) {
     this.oldMonth = this.month;
@@ -421,10 +421,9 @@ Calendar.prototype.drawLegend = function() {
     return memo;
   }, []).forEach(function(e) {
     var parts = e.split('|');
-    var entry = createElement('span', 'entry ' +  parts[1], parts[0]);
-    legend.appendChild(entry);
+    
   });
-  this.el.appendChild(legend);
+  
 }
 
 Calendar.prototype.nextMonth = function() {
@@ -447,23 +446,59 @@ function createElement(tagName, className, innerText) {
     ele.className = className;
   }
   if(innerText) {
-    ele.innderText = ele.textContent = innerText;
+    ele.textContent = innerText;
   }
   return ele;
 }
 }();
 
 !function() {
-var data = [
-    { eventName: 'Lunch Meeting w/ Mark', calendar: 'Work', color: 'orange' },
-];
-
-
-
-function addDate(ev) {
+  var planningData = @json($planningen);
+  var linkElement, iconElement;
+var data = planningData.map(function(planning) {
   
-}
+  var time = moment(planning.datetime).format('HH:mm');
+    var cleanersNames = planning.cleaners.map(function(cleaner) {
+        return cleaner.firstname;
+    }).join(', ');
+    
+    var editUrl = "{{ route('editPlanning', ['planningId' => $planning->id]) }}";
 
+    // Maak de HTML-elementen aan met behulp van DOM-methoden
+    linkElement = document.createElement('a');
+    linkElement.href = editUrl;
+    linkElement.title = "Wijzig planning";
+    linkElement.innerHTML = '<i class="fa-regular fa-pen-to-square"></i>';
+
+    iconElement = document.createElement('i');
+    iconElement.className = 'fa-regular fa-square-plus';
+
+    var eventNameHTML = planning.house.name + ' ' + time + ' ' + cleanersNames + ' ' + linkElement.outerHTML + ' ' + iconElement.outerHTML;
+
+    return {
+        eventName: eventNameHTML, // Gebruik een geschikt veld uit je planningdata
+        calendar: planning.house.name, // Je kunt hier een statische waarde gebruiken of een veld uit je planningdata
+        color: getColorBasedOnStatus(planning.status), // Implementeer deze functie om kleuren te bepalen op basis van de status
+        date: moment(planning.datetime).format('YYYY-MM-DD HH:mm'),
+    };
+});
+function getColorBasedOnStatus(status) {
+  switch (status) {
+        case 0:
+            return 'green';
+        case 1:
+            return 'orange';
+        case 2:
+            return 'red';
+    }
+}
+var linkContainer = document.createElement('div');
+linkContainer.appendChild(linkElement);
+linkContainer.appendChild(iconElement);
+
+// Voeg de container nu toe aan de kalendercontainer
+var calendarContainer = document.getElementById('calendar');
+calendarContainer.appendChild(linkContainer);
 var calendar = new Calendar('#calendar', data);
 
 }();
