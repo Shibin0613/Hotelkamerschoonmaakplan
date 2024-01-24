@@ -134,43 +134,37 @@ class PlanningController extends Controller
 
     public function updatePlanning(Request $request, $planningId)
     {
-        $request->validate([
-            'house' => 'required|numeric|exists:houses,id',
-            'datetime' => 'required|date_format:Y-m-d H:i:s',
-          ], [
-            'datetime.datetime' => 'Vul in als waarde datum tijd',
-            'house.exists' => 'Dit vakantiehuis/hotelkamer bestaat niet',
-            '*' => 'Dit veld moet ingevuld worden',
-          ]);
-
         $planning = Planning::find($planningId);
-
         if (!$planning) {
             //Voor het geval als de planning niet te vinden is
             return redirect('planning')->with('error', 'Planning is niet te vinden.');
         }
+        
+        if(isset($request->house)){
+            $request->validate([
+                'house' => 'numeric|exists:houses,id',
+                'datetime' => 'required|date_format:Y-m-d H:i:s',
+            ], [
+                'datetime.datetime' => 'Vul in als waarde datum tijd',
+                'house.exists' => 'Dit vakantiehuis/hotelkamer bestaat niet',
+            ]);
+            $selected_elements = json_encode($request->selected_elements);
 
-        $selected_elements = json_encode($request->input('selected_elements'));
+            $planning->house_id = $request->house;
+            $planning->element = $selected_elements;
+        }
+        $decorations = json_encode($request->decoration);
 
-        $decorations = json_encode($request->input('decoration'));
+        $planning->datetime = $request->datetime;
 
-        $planning->cleaners()
-        ->whereNotIn('id', array_keys($request->schoonmakers))
-        ->get()
-        ->each(function ($schoonmakers) {
-            // Delete the cleaners along with its related data
-            $schoonmakers->delete();
-        });
+        if($planning->update()){
+            return back()->with('success', 'Planning bijgewerkt');
+        }
+        else{
+            return back()->with('error', 'Het is niet gelukt');
+        }
 
-        $planning->decorations()
-        ->whereNotIn('id', array_keys($request->decoration))
-        ->get()
-        ->each(function ($extraDecoration) {
-            // Delete the cleaners along with its related data
-            $extraDecoration->delete();
-        });
-
-
+        
     }
 
     

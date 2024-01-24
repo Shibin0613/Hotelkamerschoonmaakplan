@@ -21,9 +21,8 @@
             @csrf
             <div class="input" id="houseSelect">
                 <label for="house">Vakantiehuis/Hotelkamer</label>
-                <select name="house" id="house" required>
-                    <option hidden selected disabled>{{$planning->house->name}}</option>
-                    @endforeach
+                <select name="house" id="house">
+                    <option value="{{ $planning->house->id }}" hidden selected disabled>{{$planning->house->name}}</option>
                     @foreach ($houses as $house)  
                         <option value="{{ $house->id }}">{{ $house->name }}</option>
                     @endforeach
@@ -77,9 +76,9 @@
                 <div id="elementsContainer" class="elements-container">
                     <div class="slideshow-container">
                         <div class="element" style="display: block;">
-                        @foreach($planning->decorations as $decoration)
-                            <input type="text" name="decoration[1][name]" placeholder="Naam(Pasendecoratie)" maxlength="20" value="{{$decoration->name}}">
-                            <input type="int" name="decoration[1][time]" placeholder="Tijd (10 minuten)" maxlength="20" value="{{$decoration->time}}">
+                        @foreach($planning->decorations as $key => $decoration)
+                            <input type="text" name="decoration[{{$key}}][name]" placeholder="Naam(Pasendecoratie)" maxlength="20" value="{{$decoration->name}}">
+                            <input type="int" name="decoration[{{$key}}][time]" placeholder="Tijd (10 minuten)" maxlength="20" value="{{$decoration->time}}">
                             <i class="fa-solid fa-minus removeElement"></i>
                         @endforeach
                         </div>
@@ -95,6 +94,7 @@
             
             <button>Update Planning</button>
         </form>
+        @endforeach
     </div>
 </div>
 

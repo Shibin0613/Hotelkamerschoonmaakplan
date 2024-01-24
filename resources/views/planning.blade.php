@@ -373,7 +373,7 @@ Calendar.prototype.renderEvents = function(events, ele) {
     var div = createElement('div', 'event');
     var square = createElement('div', 'event-category ' + ev.color);
     var span = createElement('span', '', ev.eventName);
-
+    
     div.appendChild(square);
     div.appendChild(span);
     wrapper.appendChild(div);

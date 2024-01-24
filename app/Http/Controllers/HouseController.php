@@ -71,24 +71,41 @@ class HouseController extends Controller
     
     public function updateHouse(Request $request, $houseId)
     {
+        $house = House::find($houseId);
         
         if(empty($request->name))
         {
-           $house =DB::table('houses')
-           ->where('id', $houseId)
-           ->get();
-            $request->name = $house->name; 
-        }
-        
-        
-        $house = House::find($houseId);
+           $elementsJson = json_encode($request->element);
+           $house->name = $house->name;
+           $house->elements = $elementsJson;
+           if($house->update())
+           {
+                return back()->with('success', 'Vakantiehuis/Hotelkamer bijgewerkt');
+           }
+           else
+           {
+                return back()->with('error', 'Het is niet gelukt');
+           }
+        }else{
+            $validatedData = $request->validate([
+                'name' => 'string|unique:houses', // Example validation rules for email
+            ], [
+                'name.unique' => 'Er is al een vakantiehuis/hotelkamer met deze naam',
+            ]);
 
-        if (!$houseId) {
-            //Voor het geval als de planning niet te vinden is
-            return redirect('houses')->with('error', 'Vakantiehuis/hotelkamer is niet te vinden.');
+            $elementsJson = json_encode($request->element);
+            $house->name = $request->name;
+            $house->elements = $elementsJson;
+            if($house->update())
+            {
+                return back()->with('success', 'Vakantiehuis/Hotelkamer bijgewerkt');
+            }
+            else
+            {
+                return back()->with('error', 'Het is niet gelukt');
+            }
         }
         
     }
 
-    
 }

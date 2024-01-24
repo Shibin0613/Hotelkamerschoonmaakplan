@@ -32,9 +32,9 @@
                     <div class="slideshow-container">
                         <div class="element" style="display: block;">
                         @if(!empty($house->elements))
-                            @foreach(json_decode($house->elements) as $element)
-                            <input type="text" name="element[1][name]" value="{{$element->name}}" maxlength="20">
-                            <input type="int" name="element[1][time]" value="{{$element->time}}" maxlength="20">
+                            @foreach(json_decode($house->elements) as $key => $element)
+                            <input type="text" name="element[{{$key + -1}}][name]" value="{{$element->name}}" maxlength="20">
+                            <input type="int" name="element[{{$key + -1}}][time]" value="{{$element->time}}" maxlength="20">
                             <i class="fa-solid fa-minus removeElement"></i>
                             @endforeach
                         @elseif(empty($house->elements))
@@ -130,7 +130,7 @@
         });
     });
 
-    let elementCounter = 1;
+    let elementCounter = {{ count(json_decode($house->elements, true)) -1 }};
 
     function addSlide() {
         elementCounter++;
