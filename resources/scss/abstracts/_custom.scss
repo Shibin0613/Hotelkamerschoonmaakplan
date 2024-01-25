@@ -71,6 +71,52 @@ i{
     }
 }
 
+@mixin modal() {
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(5px);
+    position: fixed;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    &.active {
+        opacity: 1;
+        pointer-events: all;
+        visibility: visible;
+    }
+
+    .modal-content {
+        background-color: $primary-lighter;
+        padding: 30px;
+        border-radius: 5px;
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+
+            button {
+                border: none;
+                background-color: transparent;
+                color: $font-gray;
+                transition: 0.3s ease;
+
+                &:hover {
+                    color: $secondary;
+                }
+            }
+        }
+    }
+}
+
 @mixin no-list() {
     height: calc(100vh - 70px);
     width: 100%;

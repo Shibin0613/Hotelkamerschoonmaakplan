@@ -28,22 +28,26 @@
             @enderror
             <div class="input">
                 <label for="elements">Element <i class="fa-solid fa-plus" id="addElement"></i></label>
+                
                 <div id="elementsContainer" class="elements-container">
                     <div class="slideshow-container">
-                        <div class="element" style="display: block;">
-                        @if(!empty($house->elements))
-                            @foreach(json_decode($house->elements) as $key => $element)
-                            <input type="text" name="element[{{$key + -1}}][name]" value="{{$element->name}}" maxlength="20">
-                            <input type="int" name="element[{{$key + -1}}][time]" value="{{$element->time}}" maxlength="20">
-                            <i class="fa-solid fa-minus removeElement"></i>
-                            @endforeach
-                        @elseif(empty($house->elements))
-                        <input type="text" name="element[1][name]" placeholder="Naam(Kleine Wc)" maxlength="20">
-                        <input type="int" name="element[1][time]" placeholder="TIjd (10 minuten)" maxlength="20">
-                        @endif
-                    </div>
+                        <div id="elementsContainer">
+                            @if(!empty($house->elements))
+                                @foreach(json_decode($house->elements) as $key => $element)
+                                <div class="element" style="display: block;">
+                                    <input type="text" name="element[{{$key}}][name]" value="{{$element->name}}" maxlength="20">
+                                    <input type="int" name="element[{{$key}}][time]" value="{{$element->time}}" maxlength="20">
+                                    <i class="fa-solid fa-minus removeElement"></i>
+                                </div>
+                                @endforeach
+                            @elseif(empty($house->elements))
+                            <input type="text" name="element[1][name]" placeholder="Naam(Kleine Wc)" maxlength="20">
+                            <input type="int" name="element[1][time]" placeholder="TIjd (10 minuten)" maxlength="20">
+                            @endif
+                        </div>
                     </div>
                 </div>
+
                 <a class="prev" id="prevBtn" style="display: none;" onclick="navigateElements(-1)">❮</a>
                 <a class="next" id="nextBtn" style="display: none;" onclick="navigateElements(1)">❯</a>
             </div>
@@ -68,7 +72,8 @@
     updateDotIndicators(currentElement, 1);
 
     function navigateElements(n) {
-        showElement(currentElement += n);
+        let newElement = currentElement + n;
+        showElement(newElement);
     }
 
     function showElement(n) {
@@ -120,7 +125,8 @@
         // Voeg element toe
         $('#addElement').on("click", function () {
             addSlide();
-            showElement(++currentElement);
+            currentElement = $('.element').length; // Update currentElement naar het nieuw toegevoegde element
+            showElement(currentElement);
         });
 
         // Verwijder element

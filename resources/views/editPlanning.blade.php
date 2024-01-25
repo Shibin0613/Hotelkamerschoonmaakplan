@@ -73,17 +73,18 @@
             @enderror
             <div class="input">
                 <label for="decorations">Extra decoratie <i class="fa-solid fa-plus" id="addDecoration"></i></label>
+
                 <div id="elementsContainer" class="elements-container">
                     <div class="slideshow-container">
-                        <div class="element" style="display: block;">
-                        @foreach($planning->decorations as $key => $decoration)
-                            <input type="text" name="decoration[{{$key}}][name]" placeholder="Naam(Pasendecoratie)" maxlength="20" value="{{$decoration->name}}">
-                            <input type="int" name="decoration[{{$key}}][time]" placeholder="Tijd (10 minuten)" maxlength="20" value="{{$decoration->time}}">
-                            <i class="fa-solid fa-minus removeElement"></i>
-                        @endforeach
+                        <div id="elementsContainer">
+                            @foreach($planning->decorations as $key => $decoration)
+                            <div class="element" style="display: block;">
+                                <input type="text" name="decoration[{{$key}}][name]" placeholder="Naam(Pasendecoratie)" maxlength="20" value="{{$decoration->name}}">
+                                <input type="int" name="decoration[{{$key}}][time]" placeholder="Tijd (10 minuten)" maxlength="20" value="{{$decoration->time}}">
+                                <i class="fa-solid fa-minus removeElement"></i>
+                            </div>
+                            @endforeach
                         </div>
-                        <a class="prev" id="prevBtn" style="display: none;" onclick="navigateElements(-1)">❮</a>
-                        <a class="next" id="nextBtn" style="display: none;" onclick="navigateElements(1)">❯</a>
                     </div>
                 </div>
                 
@@ -217,10 +218,11 @@ let currentElement = 1;
     }
 
     $(document).ready(function () {
-        // Voeg decoratie toe
+        // Voeg element toe
         $('#addDecoration').on("click", function () {
             addSlide();
-            showElement(++currentElement);
+            currentElement = $('.element').length; // Update currentElement naar het nieuw toegevoegde element
+            showElement(currentElement);
         });
 
         // Verwijder element

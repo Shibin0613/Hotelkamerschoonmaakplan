@@ -33,7 +33,7 @@ Route::post('/updatePlanning/{planningId}', [PlanningController::class, 'updateP
 
 Route::get('/editHouse/{houseId}', [HouseController::class, 'editHouse'])->name('editHouse');
 Route::post('/updateHouse/{houseId}', [HouseController::class, 'updateHouse'])->name('updateHouse');
-
+Route::delete('houses/{houseId}', [HouseController::class, 'deleteHouse'])->name('houses.deleteHouse');
 
 Route::get('/gebruikers', [AuthController::class, 'gebruikers'])->name('users');
 Route::get('/createAccount', [AuthController::class, 'createAccount'])->name('createAccount');

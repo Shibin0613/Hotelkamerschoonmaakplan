@@ -105,7 +105,34 @@ class HouseController extends Controller
                 return back()->with('error', 'Het is niet gelukt');
             }
         }
-        
+    }
+    
+    public function deleteHouse($houseId)
+    {
+        $house = House::find($houseId);
+
+        if (!$house) {
+          return response()->json(['error' => 'Vakantiehuis/hotelkamer is niet te vinde!'], 404);
+        }
+
+        // Check if de house is gelinkt met andere planning
+        $housePlannings = $house->plannings;
+        dd($housePlannings);
+
+        $authorized = false;
+        foreach ($housePlannings as $housePlanning) {
+          if ($house->id === $housePlanning->id) {
+            $authorized = true;
+            break;
+          }
+        }
+
+
+
+
+
+
+
     }
 
 }

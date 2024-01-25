@@ -18,12 +18,22 @@ class PlanningController extends Controller
 {
     public function planning()
     {
+        $events = [];
         $user = Auth::user();
 
         $planningen = Planning::with('house','cleaners','damage')
         ->get();
         
-        return view('planning', compact('user','planningen'));
+        foreach($planningen as $planning)
+        {
+            $events[] = [
+                'title' => $planning->house->name,
+                'start' => $planning->datetime,
+                'end' => $planning->datetime,
+            ];
+        }
+        
+        return view('planning', compact('user','events'));
     }
 
     public function createPlanning()
