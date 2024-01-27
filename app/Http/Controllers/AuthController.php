@@ -36,7 +36,7 @@ class AuthController extends Controller
             return redirect('/planning');
         }
 
-        return back()->with('error', 'de gebruikersnaam en of het wachtwoord kloppen niet');
+        return back()->with('error', 'De gebruikersnaam en of het wachtwoord kloppen niet');
     }
     public function createAccount()
     {
@@ -91,16 +91,14 @@ class AuthController extends Controller
     public function viewActivateAccount(request $request)
     {
         //haal de activatiecode van query
-        $activationCode = $request->query('code');
-
+        $activationCode = $request->query('activatecode');
         //check of de actvatiecode bestaat
         $user = User::where('activation_key', $activationCode)->first();
+
         if ($user == null) {
-            return ("Gebruiker bestaat niet");
-            return error("Gebruiker bestaat niet");
+            return redirect('login')->with('error', 'Gebruiker bestaat niet');
         } elseif ($user->password != null) {
-            return ("Account is al geactiveerd!");
-            return error("Account is al geactiveerd!");
+            return redirect('login')->with('error', 'Account is al geactiveerd!');
         } else {
             return view('activateAccount', compact('user'));
         }

@@ -20,20 +20,44 @@ class PlanningController extends Controller
     {
         $events = [];
         $user = Auth::user();
-
-        $planningen = Planning::with('house','cleaners','damage')
-        ->get();
-        
-        foreach($planningen as $planning)
+        if($user->role === 1)
         {
-            $events[] = [
-                'title' => $planning->house->name,
-                'start' => $planning->datetime,
-                'end' => $planning->datetime,
-            ];
+            $planningen = Planning::with('house','cleaners','damage')
+            ->get();
+            
+            foreach($planningen as $planning)
+            {
+                $events[] = [
+                    'title' => $planning->house->name,
+                    'start' => $planning->startdatetime,
+                    'end' => $planning->enddatetime,
+                ];
+            }
+        }
+        elseif($user->role === 0)
+        {
+            $planningen = Planning::with('house', 'cleaners', 'damage')
+            ->whereHas('cleaners', function ($query) use ($user) {
+                $query->where('cleaner_id', $user->id);
+            })
+            ->get();
+
+            foreach ($planningen as $planning) {
+                $cleanerNames = $planning->cleaners->pluck('firstname')->pluck('lastname')->toArray();
+            
+                $events[] = [
+                    'title' => [
+                        $planning->house->name,
+                        implode(', ', $cleanerNames),
+                        '',
+                    ],
+                    'start' => $planning->startdatetime,
+                    'end' => $planning->enddatetime,
+                ];
+            }
         }
         
-        return view('planning', compact('user','events'));
+        return view('planning', compact('user','planningen','events'));
     }
 
     public function createPlanning()
@@ -64,19 +88,26 @@ class PlanningController extends Controller
     {
         $validatedData = $request->validate([
             'house' => 'required|numeric|exists:houses,id',
-            'datetime' => 'required|date_format:Y-m-d H:i:s',
+            'startdatetime' => 'required|date_format:Y-m-d H:i:s',
+            'enddatetime' => 'required|date_format:Y-m-d H:i:s',
         ], [
-            'datetime.datetime' => 'Vul in als waarde: datum tijd',
+            'startdatetime.datetime' => 'Vul in als waarde: datum tijd',
+            'enddatetime.datetime' => 'Vul in als waarde: datum tijd',
             'house.exists' => 'Dit vakantiehuis/hotelkamer bestaat niet',
             '*' => 'Deze velden moeten ingevuld worden',
         ]);
+
+        if ($request->input('enddatetime') < $request->input('startdatetime')) {
+            return back()->with('error', 'Vul een geldig einddatum en tijd in');
+        }
 
         $jsonelements = json_encode($request->selected_elements);
         
         $planning = new Planning([
             'house_id' => $request->house,
             'element' => $jsonelements,
-            'datetime' => $request->datetime,
+            'startdatetime' => $request->startdatetime,
+            'enddatetime' => $request->enddatetime,
             'status' => 0,
         ]);
 
@@ -149,13 +180,19 @@ class PlanningController extends Controller
             //Voor het geval als de planning niet te vinden is
             return redirect('planning')->with('error', 'Planning is niet te vinden.');
         }
+
+        if ($request->input('enddatetime') < $request->input('startdatetime')) {
+            return back()->with('error', 'Vul een geldig einddatum en tijd in');
+        }
         
         if(isset($request->house)){
             $request->validate([
                 'house' => 'numeric|exists:houses,id',
-                'datetime' => 'required|date_format:Y-m-d H:i:s',
+                'startdatetime' => 'required|date_format:Y-m-d H:i:s',
+                'enddatetime' => 'required|date_format:Y-m-d H:i:s',
             ], [
-                'datetime.datetime' => 'Vul in als waarde datum tijd',
+                'startdatetime.datetime' => 'Vul in als waarde datum tijd',
+                'enddatetime.datetime' => 'Vul in als waarde datum tijd',
                 'house.exists' => 'Dit vakantiehuis/hotelkamer bestaat niet',
             ]);
             $selected_elements = json_encode($request->selected_elements);
@@ -165,7 +202,8 @@ class PlanningController extends Controller
         }
         $decorations = json_encode($request->decoration);
 
-        $planning->datetime = $request->datetime;
+        $planning->startdatetime = $request->startdatetime;
+        $planning->enddatetime = $request->enddatetime;
 
         if($planning->update()){
             return back()->with('success', 'Planning bijgewerkt');
@@ -174,8 +212,11 @@ class PlanningController extends Controller
             return back()->with('error', 'Het is niet gelukt');
         }
 
+    }
+    
+    public function updatedPlanning()
+    {
         
     }
-
     
 }

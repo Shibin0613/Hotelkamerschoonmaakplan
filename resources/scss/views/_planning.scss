@@ -20,17 +20,32 @@
       color: white;
     }
 
-    .fc-time-grid-event {
-
+    .eventWithComment {
+      white-space: pre-line;
     }
 
-    .fc-daygrid-event {
-      
-    }
+    #delete-planning-modal{
+      @include modal();
 
-    .fc-event-main-frame{
-      width: max-content;
-    }
+      .modal-content {
+          width: 500px;
+
+          h2 {
+              text-align: center;
+              margin-bottom: 20px;
+          }
+
+          .buttons {
+              display: flex;
+              gap: 20px;
+              justify-content: center;
+
+              .button {
+                  @include button();
+              }
+          }
+      }
+  }
 
         
 }

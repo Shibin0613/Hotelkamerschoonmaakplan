@@ -44,10 +44,17 @@
                 </div>
             </div>
             <div class="input" id="houseSelect">
-                <label for="house">Datum en tijd</label>
-                    <input type="datetime-local" name="datetime" value="{{$planning->datetime}}">
+                <label for="house">Startdatum tijd</label>
+                    <input type="datetime-local" name="startdatetime" value="{{$planning->startdatetime}}">
             </div>
-            @error('datum')
+            @error('startdatetimt')
+            <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+            <div class="input" id="houseSelect">
+                <label for="house">Einddatum tijd</label>
+                    <input type="datetime-local" name="enddatetime" value="{{$planning->enddatetime}}">
+            </div>
+            @error('enddatetimt')
             <div class="alert alert-danger">{{ $message }}</div>
             @enderror
             <div class="input">
