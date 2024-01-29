@@ -42,9 +42,16 @@ class PlanningController extends Controller
             })
             ->get();
 
+            $jsonArray = [];
             foreach ($planningen as $planning) {
                 $cleanerNames = $planning->cleaners->pluck('firstname')->pluck('lastname')->toArray();
-            
+                
+                $jsonArray[$planning->id] = [
+                    'name' => $planning->element,
+                    'time' => $planning->time,
+                    // Add other properties as needed
+                ];
+
                 $events[] = [
                     'title' => [
                         $planning->house->name,
@@ -214,9 +221,64 @@ class PlanningController extends Controller
 
     }
     
-    public function updatedPlanning()
+    public function updatedPlanning(Request $request, $planningId)
     {
+        $planning = Planning::find($planningId);
+
+        if (!$planning) {
+            //Voor het geval als de planning niet te vinden is
+            return redirect('planning')->with('error', 'Planning is niet te vinden.');
+        }
+
+        // alle requestdata ophalen
+        $formData = $request->all();
+
+        // haal alleen de elements data eruit
+        $elements = $formData['elements'];
+
+        // Check of alle element aan staat, en dat betekent dat een taak klaar is
+        $allOn = true;
+        foreach ($elements as $element) {
+            if (!isset($element['onoff']) || $element['onoff'] !== 'on') {
+                $allOn = false;
+                break;
+            }
+        }
+        // Check of de damage input null is, als wel, dat is die planning afgerond zonder schade, anders wel 
+        $hasDamage = $request->input('damage') !== null;
+        // Update planning status
+        if($allOn && !$hasDamage){
+            $status = 0;
+        }elseif($allOn && $hasDamage){
+            $status = 2;
+        }elseif(!$allOn){
+            $status = 1;
+        }
         
+        $elementsJson = json_encode($request->elements);
+        $planning->element = $elementsJson;
+        $planning->status = $status;
+
+        if($hasDamage){
+            $damage = new Damage([
+                'planning_id' => $planningId,
+                'name' => $request->damage,
+                'status' => 1,
+                'need' => 1,
+            ]);
+            $damage->save();
+        }
+
+        if($planning->update())
+        {
+            return back()->with('success', 'Planning is bijgewerkt');
+        }
+        else
+        {
+            return back()->with('error', 'Het is niet gelukt');
+        }
+
+
     }
     
 }

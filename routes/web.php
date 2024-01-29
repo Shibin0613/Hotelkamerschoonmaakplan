@@ -30,7 +30,7 @@ Route::post('/createPlanningPost', [PlanningController::class, 'createPlanningPo
 
 Route::get('/editPlanning/{planningId}', [PlanningController::class, 'editPlanning'])->name('editPlanning');
 Route::post('/updatePlanning/{planningId}', [PlanningController::class, 'updatePlanning'])->name('updatePlanning');
-Route::post('/planning/{planningId}', [PlanningController::class, 'updatedPlanning'])->name('planning.updatedPlanning');
+Route::match(['get', 'post'], '/updatedplanning/{planningId}', [PlanningController::class, 'updatedPlanning'])->name('updatedplanning.updatedPlanning');
 
 Route::get('/editHouse/{houseId}', [HouseController::class, 'editHouse'])->name('editHouse');
 Route::post('/updateHouse/{houseId}', [HouseController::class, 'updateHouse'])->name('updateHouse');

@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Damage extends Model
 {
     protected $table = 'damage';
+    public $timestamps = false;
     use HasFactory;
-    
 
     protected $fillable = [
         'planning_id',
