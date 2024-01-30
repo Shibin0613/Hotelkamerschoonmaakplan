@@ -25,13 +25,6 @@
             @error('email')
             <div class="alert alert-danger">{{ $message }}</div>
             @enderror
-            <div class="input1">
-                <label for="telefoon">Telefoonnr</label>
-                <p>+31<input type="tel" name="telefoon" id="telefoon" placeholder="Vul hier de telefoonnr in... Format: 1234 5678 9" maxlength="9"></p>
-            </div>
-            @error('telefoon')
-            <div class="alert alert-danger">{{ $message }}</div>
-            @enderror
             
             <button>Account aanmaken</button>
         </form>

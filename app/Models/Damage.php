@@ -17,8 +17,6 @@ class Damage extends Model
         'name',
         'status',
         'need',
-        'repair',
-        'datetime',
     ];
 
     public function planning()

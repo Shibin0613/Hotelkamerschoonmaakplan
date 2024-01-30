@@ -47,12 +47,10 @@ class AuthController extends Controller
     {
         $validatedData = $request->validate([
             'email' => 'required|email|unique:users', // Example validation rules for email
-            'telefoon' => 'digits:9',
         ], [
             'email.unique' => 'Er is al een account met dit e-mailadres',
             'email.email' => 'Vul een geldig e-mailadres in',
             'email.required' => 'Het e-mailadres is verplicht',
-            'telefoon.digits' => 'vul een geldig telefoonnr in',
             '*' => 'Deze velden moeten ingevuld worden',
         ]);
 
@@ -61,7 +59,6 @@ class AuthController extends Controller
         $user = new User([
             'email' => $validatedData['email'],
             'role' => 0,
-            'telefoonnr' => $validatedData['telefoon'],
             'activation_key' => $guid,
         ]);
 
@@ -91,7 +88,7 @@ class AuthController extends Controller
     public function viewActivateAccount(request $request)
     {
         //haal de activatiecode van query
-        $activationCode = $request->query('activatecode');
+        $activationCode = $request->query('code');
         //check of de actvatiecode bestaat
         $user = User::where('activation_key', $activationCode)->first();
 

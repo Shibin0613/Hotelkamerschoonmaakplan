@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('house_id');
             $table->json('element');
-            $table->timestamp('startdatetime');
-            $table->timestamp('enddatetime');
+            $table->dateTime('startdatetime');
+            $table->dateTime('enddatetime');
             $table->integer('status');
             $table->timestamps();
 

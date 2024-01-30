@@ -14,7 +14,8 @@ class Planning extends Model
     protected $fillable = [
         'house_id',
         'element',
-        'datetime',
+        'startdatetime',
+        'enddatetime',
         'status',
     ];
 

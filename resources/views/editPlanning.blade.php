@@ -36,14 +36,14 @@
                 <div id="element-checkboxes">
                     @foreach(json_decode($planning->element) as $key =>$element)
                     <label>{{$element->name}} {{$element->time}} minuten 
-                        <input type="checkbox" disabled checked name="selected_elements[{{$key}}][name]" value="{{$element->name}}"> 
+                        <input type="checkbox" checked name="selected_elements[{{$key}}][name]" value="{{$element->name}}">
+                        <input type="hidden" name="selected_elements[{{$key}}][time]" value="{{$element->time}}" id="time_{{$key}}">
                     </label>
                     @endforeach
                     <!-- Checkboxes will be dynamically added here based on the selected house -->
                 </div>
             </div>
             
-
             <div class="input" id="houseSelect">
                 <label for="house">Startdatum tijd</label>
                     <input type="datetime-local" name="startdatetime" value="{{$planning->startdatetime}}">
@@ -109,6 +109,19 @@
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
+    document.querySelectorAll('input[type=checkbox]').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            var key = this.name.match(/\d+/)[0]; // Haal het nummer uit de checkbox-naam
+            var timeInput = document.getElementById('time_' + key);
+
+            // Schakel de tijdinput uit als de checkbox is uitgeschakeld
+            if (!this.checked) {
+                timeInput.disabled = true;
+            } else {
+                timeInput.disabled = false;
+            }
+        });
+    });
     let output = document.getElementById('output');
       var showCheckBoxes = true;
 

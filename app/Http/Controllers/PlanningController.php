@@ -95,10 +95,10 @@ class PlanningController extends Controller
     {
         $validatedData = $request->validate([
             'house' => 'required|numeric|exists:houses,id',
-            'startdatetime' => 'required',
-            'enddatetime' => 'required|after:startdatetime',
+            'startdatetime' => 'required|date_format:Y-m-d\TH:i',
+            'enddatetime' => 'required|date_format:Y-m-d\TH:i|after:startdatetime',
         ], [
-            'enddatetime.after' => 'Vul een geldige einddatum tijd',
+            'enddatetime.after' => 'Vul een einddatum in na de startdatum',
             'house.exists' => 'Dit vakantiehuis/hotelkamer bestaat niet',
         ]);
 
@@ -124,15 +124,17 @@ class PlanningController extends Controller
             
                 $planningCleaner->save();
             }
-            foreach($request->decoration as $decoration){
-                if($decoration['name'] !== null && $decoration['time'] !== null){
-                    $decoration = new Extradecoration([
-                        'planning_id' => $planningid,
-                        'name' => $decoration['name'],
-                        'time' => $decoration['time'],
-                    ]);
-                
-                    $decoration->save();
+            if(isset($request->decoration)){
+                foreach($request->decoration as $decoration){
+                    if($decoration['name'] !== null && $decoration['time'] !== null){
+                        $decoration = new Extradecoration([
+                            'planning_id' => $planningid,
+                            'name' => $decoration['name'],
+                            'time' => $decoration['time'],
+                        ]);
+                    
+                        $decoration->save();
+                    }
                 }
             }
             return back()->with('success', 'Planning is aangemaakt');
@@ -176,31 +178,34 @@ class PlanningController extends Controller
 
     public function updatePlanning(Request $request, $planningId)
     {
+        
         $planning = Planning::find($planningId);
         if (!$planning) {
             //Voor het geval als de planning niet te vinden is
             return redirect('planning')->with('error', 'Planning is niet te vinden.');
         }
-
         if ($request->input('enddatetime') < $request->input('startdatetime')) {
             return back()->with('error', 'Vul een geldig einddatum en tijd in');
         }
         
         if(isset($request->house)){
-            $request->validate([
-                'house' => 'numeric|exists:houses,id',
-                'startdatetime' => 'required|date_format:Y-m-d H:i:s',
-                'enddatetime' => 'required|date_format:Y-m-d H:i:s',
-            ], [
-                'startdatetime.datetime' => 'Vul in als waarde datum tijd',
-                'enddatetime.datetime' => 'Vul in als waarde datum tijd',
-                'house.exists' => 'Dit vakantiehuis/hotelkamer bestaat niet',
-            ]);
-            $selected_elements = json_encode($request->selected_elements);
-
             $planning->house_id = $request->house;
-            $planning->element = $selected_elements;
+        }else{
+            $planning->house_id = $planning->house_id;
         }
+
+        $request->validate([
+            'house' => 'numeric|exists:houses,id',
+            'startdatetime' => 'required|date_format:Y-m-d\TH:i',
+            'enddatetime' => 'required|date_format:Y-m-d\TH:i',
+        ], [
+            'startdatetime.datetime' => 'Vul in als waarde datum tijd',
+            'enddatetime.datetime' => 'Vul in als waarde datum tijd',
+            'house.exists' => 'Dit vakantiehuis/hotelkamer bestaat niet',
+        ]);
+        $selected_elements = json_encode($request->selected_elements);
+        $planning->element = $selected_elements;
+
         if(isset($request->decoration)){
             $decorations = json_encode($request->decoration);
         }
@@ -283,12 +288,16 @@ class PlanningController extends Controller
         ->orderByDesc('status')
         ->get();
 
-        foreach($damages as $damage){
-            $house_id = $damage->planning->house_id;
+        if(!$damages){
         }
-        $houses = DB::table('houses')
-        ->where('id',$house_id)
-        ->get();
+        else{
+            foreach($damages as $damage){
+                $house_id = $damage->planning->house_id;
+            }
+            $houses = DB::table('houses')
+            ->where('id',$house_id)
+            ->get();
+        }
 
         return view('damages', compact('damages','houses'));
     }

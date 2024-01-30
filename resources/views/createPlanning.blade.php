@@ -135,14 +135,24 @@ $(document).ready(function () {
             // Check if it's an array before creating checkboxes
             if (Array.isArray(selectedHouseElements)) {
                 selectedHouseElements.forEach(function (element) {
-
                     elementCounter++;
 
-                    const checkbox = $(`<label>${element.name} ${element.time} minuten` + `&nbsp&nbsp`+ 
-                    `<input type="checkbox" checked ` + 'name="selected_elements[' + elementCounter + '][name]"' + `value="${element.name}">` + 
-                    `<input hidden ` + 'name="selected_elements[' + elementCounter + '][time]"' + ` value="${element.time}"></label>`);
-                    
+                    const checkbox = $(`<label>${element.name} ${element.time} minuten` + `&nbsp&nbsp` +
+                        `<input type="checkbox" checked ` + 'name="selected_elements[' + elementCounter + '][name]"' + `value="${element.name}">` +
+                        `<input hidden ` + 'name="selected_elements[' + elementCounter + '][time]"' + ` value="${element.time}" id="time_${elementCounter}"></label>`);
+
                     elementCheckboxes.append(checkbox);
+                });
+                $('input[type=checkbox]').on('change', function () {
+                    var key = this.name.match(/\d+/)[0];
+                    var timeInput = $(`#time_${key}`);
+
+                    // Schakel de tijdinput uit als de checkbox is uitgeschakeld
+                    if (!this.checked) {
+                        timeInput.prop('disabled', true);
+                    } else {
+                        timeInput.prop('disabled', false);
+                    }
                 });
                 elementInput.removeClass('d-none');
             } else {

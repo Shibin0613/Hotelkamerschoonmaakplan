@@ -68,73 +68,78 @@
     <script>
     let currentElement = 1;
 
-    // Initialize dot container
-    updateDotIndicators(currentElement, 1);
+// Initialize dot container
+updateDotIndicators(currentElement, $('.element').length);
 
-    function navigateElements(n) {
-        let newElement = currentElement + n;
-        showElement(newElement);
+function navigateElements(n) {
+    showElement(currentElement + n);
+}
+
+function showElement(n) {
+    let elements = document.getElementsByClassName("element");  
+    if (n > elements.length) {
+        currentElement = 1;
+    } else if (n < 1) {
+        currentElement = elements.length;
+    } else {
+        currentElement = n;
     }
 
-    function showElement(n) {
-        let elements = document.getElementsByClassName("element");
-        if (n > elements.length) {
-            currentElement = elements.length;
-        }
-        if (n < 1) { currentElement = 1; }
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].style.display = "none";
-        }
-        elements[currentElement - 1].style.display = "block";
-        updateDotIndicators(currentElement, elements.length);
-
-        // Toon of verberg navigatieknoppen op basis van de huidige slide
-        let prevBtn = document.getElementById("prevBtn");
-        let nextBtn = document.getElementById("nextBtn");
-        if (currentElement === 1) {
-            prevBtn.style.display = "none";
-        } else {
-            prevBtn.style.display = "block";
-        }
-        if (currentElement === elements.length) {
-            nextBtn.style.display = "none";
-        } else {
-            nextBtn.style.display = "block";
-        }
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].style.display = "none";
     }
+    elements[currentElement - 1].style.display = "block";
+    updateDotIndicators(currentElement, elements.length);
 
-    function updateDotIndicators(current, total) {
-        let dotContainer = document.getElementById("dotContainer");
-        if (dotContainer) {
-            dotContainer.innerHTML = ""; // Clear existing dots
+    // Bij het verwijderen van een element, werk de elementCounter en de nummering van de elementen bij
+    elementCounter = elements.length;
+    updateElementNumbering();
+}
 
-            for (let i = 1; i <= total; i++) {
-                let dot = document.createElement("span");
-                dot.className = "dot";
-                dot.onclick = function () { currentSlide(i); };
-                dotContainer.appendChild(dot);
+function updateElementNumbering() {
+    $('.element').each(function (index) {
+        let newNumber = index + 1;
+        $(this).find('input[name^="element"]').each(function () {
+            let newName = $(this).attr('name').replace(/\[\d+\]/, '[' + newNumber + ']');
+            $(this).attr('name', newName);
+        });
+    });
+}
 
-                if (i === current) {
-                    dot.className += " active";
-                }
+function updateDotIndicators(current, total) {
+    let dotContainer = document.getElementById("dotContainer");
+    if (dotContainer) {
+        dotContainer.innerHTML = "";
+
+        for (let i = 1; i <= total; i++) {
+            let dot = document.createElement("span");
+            dot.className = "dot";
+            dot.onclick = function () {
+                showElement(i);
+            };
+            dotContainer.appendChild(dot);
+
+            if (i === current) {
+                dot.className += " active";
             }
         }
     }
+}
 
-    $(document).ready(function () {
-        // Voeg element toe
-        $('#addElement').on("click", function () {
-            addSlide();
-            currentElement = $('.element').length; // Update currentElement naar het nieuw toegevoegde element
-            showElement(currentElement);
-        });
-
-        // Verwijder element
-        $('#elementsContainer').on("click", ".removeElement", function () {
-            $(this).closest('.element').remove();
-            showElement(currentElement);
-        });
+$(document).ready(function () {
+    // Voeg element toe
+    $('#addElement').on("click", function () {
+        addSlide();
+        currentElement = $('.element').length; // Update currentElement naar het nieuw toegevoegde element
+        showElement(currentElement);
     });
+
+    // Verwijder element
+    $('#elementsContainer').on("click", ".removeElement", function () {
+        $(this).closest('.element').remove();
+        showElement(currentElement);
+    });
+});
 
     let elementCounter = {{ count(json_decode($house->elements, true))}};
 

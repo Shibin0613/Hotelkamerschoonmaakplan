@@ -17,8 +17,6 @@ return new class extends Migration
             $table->string('name');
             $table->integer('status');
             $table->integer('need');
-            $table->string('repair')->nullable();
-            $table->timestamp('datetime')->nullable();
 
             $table->foreign('planning_id')->references('id')->on('planning');
         });
