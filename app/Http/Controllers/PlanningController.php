@@ -293,9 +293,27 @@ class PlanningController extends Controller
         return view('damages', compact('damages','houses'));
     }
 
-    public function updateDamage()
+    public function updateDamage($damageId)
     {
-        
+
+        $damage = Damage::find($damageId);
+
+        if (!$damage) {
+            //Voor het geval als de planning niet te vinden is
+            return redirect('damages')->with('error', 'Deze schade is niet te vinden.');
+        }
+
+        $damage->status = 0;
+        $damage->datetime = date('Y-m-d H:i:s');
+        if($damage->update())
+        {
+            return back()->with('success', 'Damage is afgerond');
+        }
+        else
+        {
+            return back()->with('error', 'Het is niet gelukt');
+        }
+
     }
     
 }

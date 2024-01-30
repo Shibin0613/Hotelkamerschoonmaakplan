@@ -117,7 +117,6 @@ class HouseController extends Controller
 
         // Check if de house is gelinkt met andere planning
         $housePlannings = $house->plannings;
-        dd($housePlannings);
 
         $authorized = false;
         foreach ($housePlannings as $housePlanning) {
@@ -126,12 +125,6 @@ class HouseController extends Controller
             break;
           }
         }
-
-
-
-
-
-
 
     }
 

@@ -136,7 +136,7 @@
         });
     });
 
-    let elementCounter = {{ count(json_decode($house->elements, true)) -1 }};
+    let elementCounter = {{ count(json_decode($house->elements, true))}};
 
     function addSlide() {
         elementCounter++;
