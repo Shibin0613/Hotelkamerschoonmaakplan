@@ -48,3 +48,6 @@ Route::get('/houses', [HouseController::class, 'houses'])->name('houses');
 
 Route::get('/createHouse', [HouseController::class, 'createHouse'])->name('createHouse');
 Route::post('/createHousePost', [HouseController::class, 'createHousePost'])->name('createHousePost');
+
+Route::get('/damages', [PlanningController::class, 'damage'])->name('damages');
+Route::post('damages/{damageId}', [PlanningController::class, 'updateDamage'])->name('damages.updateDamage');

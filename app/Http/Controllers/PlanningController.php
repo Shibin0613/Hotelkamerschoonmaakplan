@@ -95,27 +95,20 @@ class PlanningController extends Controller
     {
         $validatedData = $request->validate([
             'house' => 'required|numeric|exists:houses,id',
-            'startdatetime' => 'required|date_format:Y-m-d H:i:s',
-            'enddatetime' => 'required|date_format:Y-m-d H:i:s',
+            'startdatetime' => 'required',
+            'enddatetime' => 'required|after:startdatetime',
         ], [
-            'startdatetime.datetime' => 'Vul in als waarde: datum tijd',
-            'enddatetime.datetime' => 'Vul in als waarde: datum tijd',
+            'enddatetime.after' => 'Vul een geldige einddatum tijd',
             'house.exists' => 'Dit vakantiehuis/hotelkamer bestaat niet',
-            '*' => 'Deze velden moeten ingevuld worden',
         ]);
 
-        if ($request->input('enddatetime') < $request->input('startdatetime')) {
-            return back()->with('error', 'Vul een geldig einddatum en tijd in');
-        }
-
         $jsonelements = json_encode($request->selected_elements);
-        
         $planning = new Planning([
             'house_id' => $request->house,
             'element' => $jsonelements,
             'startdatetime' => $request->startdatetime,
             'enddatetime' => $request->enddatetime,
-            'status' => 0,
+            'status' => 1,
         ]);
 
         if($planning->save()){
@@ -131,15 +124,16 @@ class PlanningController extends Controller
             
                 $planningCleaner->save();
             }
-
-            foreach ($request->decoration as $decoration) {
-                $decoration = new Extradecoration([
-                    'planning_id' => $planningid,
-                    'name' => $decoration['name'],
-                    'time' => $decoration['time'],
-                ]);
-            
-                $decoration->save();
+            foreach($request->decoration as $decoration){
+                if($decoration['name'] !== null && $decoration['time'] !== null){
+                    $decoration = new Extradecoration([
+                        'planning_id' => $planningid,
+                        'name' => $decoration['name'],
+                        'time' => $decoration['time'],
+                    ]);
+                
+                    $decoration->save();
+                }
             }
             return back()->with('success', 'Planning is aangemaakt');
         }else{
@@ -207,7 +201,9 @@ class PlanningController extends Controller
             $planning->house_id = $request->house;
             $planning->element = $selected_elements;
         }
-        $decorations = json_encode($request->decoration);
+        if(isset($request->decoration)){
+            $decorations = json_encode($request->decoration);
+        }
 
         $planning->startdatetime = $request->startdatetime;
         $planning->enddatetime = $request->enddatetime;
@@ -279,6 +275,27 @@ class PlanningController extends Controller
         }
 
 
+    }
+
+    public function damage()
+    {
+        $damages = Damage::with('planning', 'house')
+        ->orderByDesc('status')
+        ->get();
+
+        foreach($damages as $damage){
+            $house_id = $damage->planning->house_id;
+        }
+        $houses = DB::table('houses')
+        ->where('id',$house_id)
+        ->get();
+
+        return view('damages', compact('damages','houses'));
+    }
+
+    public function updateDamage()
+    {
+        
     }
     
 }

@@ -34,27 +34,28 @@
             <div class="input" id="element-input">
                 <label for="element">Elements</label>
                 <div id="element-checkboxes">
+                    @foreach(json_decode($planning->element) as $key =>$element)
+                    <label>{{$element->name}} {{$element->time}} minuten 
+                        <input type="checkbox" disabled checked name="selected_elements[{{$key}}][name]" value="{{$element->name}}"> 
+                    </label>
+                    @endforeach
                     <!-- Checkboxes will be dynamically added here based on the selected house -->
                 </div>
             </div>
-            <div class="input d-none" id="element-input">
-                <label for="element">Elements</label>
-                <div id="element-checkboxes">
-                    <!-- Checkboxes will be dynamically added here based on the selected house -->
-                </div>
-            </div>
+            
+
             <div class="input" id="houseSelect">
                 <label for="house">Startdatum tijd</label>
                     <input type="datetime-local" name="startdatetime" value="{{$planning->startdatetime}}">
             </div>
-            @error('startdatetimt')
+            @error('startdatetime')
             <div class="alert alert-danger">{{ $message }}</div>
             @enderror
             <div class="input" id="houseSelect">
                 <label for="house">Einddatum tijd</label>
                     <input type="datetime-local" name="enddatetime" value="{{$planning->enddatetime}}">
             </div>
-            @error('enddatetimt')
+            @error('enddatetime')
             <div class="alert alert-danger">{{ $message }}</div>
             @enderror
             <div class="input">

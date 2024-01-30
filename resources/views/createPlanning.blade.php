@@ -36,18 +36,18 @@
                     <!-- Checkboxes will be dynamically added here based on the selected house -->
                 </div>
             </div>
-            <div class="input" id="houseSelect">
+            <div class="input">
                 <label for="house">Startdatum tijd</label>
-                    <input type="datetime-local" name="startdatetime">
+                <input type="datetime-local" name="startdatetime">
             </div>
             @error('startdatetime')
             <div class="alert alert-danger">{{ $message }}</div>
             @enderror
-            <div class="input" id="houseSelect">
-                <label for="house">Einddatun tijd</label>
-                    <input type="datetime-local" name="enddatetime">
+            <div class="input">
+                <label for="house">Einddatum tijd</label>
+                <input type="datetime-local" name="enddatetime">
             </div>
-            @error('enddatetimt')
+            @error('enddatetime')
             <div class="alert alert-danger">{{ $message }}</div>
             @enderror
             <div class="input">
@@ -71,8 +71,8 @@
                 <div id="elementsContainer" class="elements-container">
                     <div class="slideshow-container">
                         <div class="element" style="display: block;">
-                            <input type="text" name="decoration[1][name]" placeholder="Naam(Pasendecoratie)" maxlength="20">
-                            <input type="int" name="decoration[1][time]" placeholder="Tijd (10 minuten)" maxlength="20">
+                            <input type="text" name="decoration[0][name]" placeholder="Naam(Pasendecoratie)" maxlength="20">
+                            <input type="int" name="decoration[0][time]" placeholder="Tijd (10 minuten)" maxlength="20">
                             <i class="fa-solid fa-minus removeElement"></i>
                         </div>
                         <a class="prev" id="prevBtn" style="display: none;" onclick="navigateElements(-1)">❮</a>
@@ -222,7 +222,7 @@ let currentElement = 1;
         });
     });
 
-    let decorationCounter = 1;
+    let decorationCounter = 0;
     
     function addSlide() {
         decorationCounter++;

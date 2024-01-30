@@ -55,11 +55,7 @@
                     </div>
 
                     <div class="buttons">
-                        @if(!isset($element->onoff))
-                            <button class="button">Versturen</button>
-                        @else
-                            <button class="button">Afronden</button>
-                        @endif
+                        <button class="button">Versturen</button>
                     </div>
                 </form>
             @endforeach
