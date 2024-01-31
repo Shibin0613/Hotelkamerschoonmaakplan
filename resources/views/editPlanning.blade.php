@@ -101,7 +101,7 @@
                 <div id="dotContainer"></div>
             </div>
             
-            <button>Update Planning</button>
+            <button>Planning opslaan</button>
         </form>
         @endforeach
     </div>
@@ -109,42 +109,29 @@
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
-    document.querySelectorAll('input[type=checkbox]').forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            var key = this.name.match(/\d+/)[0]; // Haal het nummer uit de checkbox-naam
-            var timeInput = document.getElementById('time_' + key);
+let output = document.getElementById('output');
+var showCheckBoxes = true;
 
-            // Schakel de tijdinput uit als de checkbox is uitgeschakeld
-            if (!this.checked) {
-                timeInput.disabled = true;
-            } else {
-                timeInput.disabled = false;
-            }
-        });
-    });
-    let output = document.getElementById('output');
-      var showCheckBoxes = true;
+function showOptions() {
+    var options =
+    document.getElementById("options");
 
-      function showOptions() {
-         var options =
-            document.getElementById("options");
-
-         if (showCheckBoxes) {
-            options.style.display = "flex";
-            showCheckBoxes = !showCheckBoxes;
-         } else {
-            options.style.display = "none";
-            showCheckBoxes = !showCheckBoxes;
-         }
-      }
-      function getOptions() {
-         var selectedOptions = document.querySelectorAll('input[type=checkbox]:checked')
-         output.innerHTML = "The selected options are given below. <br/>";
-         for (var i = 0; i < selectedOptions.length; i++) {
-            output.innerHTML += selectedOptions[i].value + " , ";
-            console.log(selectedOptions[i])
-         }
-      }
+    if (showCheckBoxes) {
+    options.style.display = "flex";
+    showCheckBoxes = !showCheckBoxes;
+    } else {
+    options.style.display = "none";
+    showCheckBoxes = !showCheckBoxes;
+    }
+}
+function getOptions() {
+    var selectedOptions = document.querySelectorAll('input[type=checkbox]:checked')
+    output.innerHTML = "The selected options are given below. <br/>";
+    for (var i = 0; i < selectedOptions.length; i++) {
+    output.innerHTML += selectedOptions[i].value + " , ";
+    console.log(selectedOptions[i])
+    }
+}
 $(document).ready(function () {
     const houseSelect = $('#house');
     const elementInput = $('#element-input');
@@ -161,7 +148,7 @@ $(document).ready(function () {
         if (elements[selectedHouseId]) {
             const selectedHouseElements = Object.values(elements[selectedHouseId]);
 
-            let elementCounter = 0;
+            let decorationCounter = 0;
             // Check if it's an array before creating checkboxes
             if (Array.isArray(selectedHouseElements)) {
                 selectedHouseElements.forEach(function (element) {
@@ -186,85 +173,91 @@ $(document).ready(function () {
 });
 let currentElement = 1;
 
-    // Initialize dot container
-    updateDotIndicators(currentElement, 1);
+// Initialize dot container
+updateDotIndicators(currentElement, $('.element').length);
 
-    function navigateElements(n) {
-        showElement(currentElement += n);
+function navigateElements(n) {
+    showElement(currentElement + n);
+}
+
+function showElement(n) {
+    let elements = document.getElementsByClassName("element");  
+    if (n > elements.length) {
+        currentElement = 1;
+    } else if (n < 1) {
+        currentElement = elements.length;
+    } else {
+        currentElement = n;
     }
 
-    function showElement(n) {
-        let elements = document.getElementsByClassName("element");
-        if (n > elements.length) {
-            currentElement = elements.length;
-        }
-        if (n < 1) { currentElement = 1; }
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].style.display = "none";
-        }
-        elements[currentElement - 1].style.display = "block";
-        updateDotIndicators(currentElement, elements.length);
-
-        // Toon of verberg navigatieknoppen op basis van de huidige slide
-        let prevBtn = document.getElementById("prevBtn");
-        let nextBtn = document.getElementById("nextBtn");
-        if (currentElement === 1) {
-            prevBtn.style.display = "none";
-        } else {
-            prevBtn.style.display = "block";
-        }
-        if (currentElement === elements.length) {
-            nextBtn.style.display = "none";
-        } else {
-            nextBtn.style.display = "block";
-        }
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].style.display = "none";
     }
+    elements[currentElement - 1].style.display = "block";
+    updateDotIndicators(currentElement, elements.length);
 
-    function updateDotIndicators(current, total) {
-        let dotContainer = document.getElementById("dotContainer");
-        if (dotContainer) {
-            dotContainer.innerHTML = ""; // Clear existing dots
+    // Bij het verwijderen van een element, werk de elementCounter en de nummering van de elementen bij
+    elementCounter = elements.length;
+    updateElementNumbering();
+}
 
-            for (let i = 1; i <= total; i++) {
-                let dot = document.createElement("span");
-                dot.className = "dot";
-                dot.onclick = function () { currentSlide(i); };
-                dotContainer.appendChild(dot);
+function updateElementNumbering() {
+    $('.element').each(function (index) {
+        let newNumber = index + 1;
+        $(this).find('input[name^="element"]').each(function () {
+            let newName = $(this).attr('name').replace(/\[\d+\]/, '[' + newNumber + ']');
+            $(this).attr('name', newName);
+        });
+    });
+}
 
-                if (i === current) {
-                    dot.className += " active";
-                }
+function updateDotIndicators(current, total) {
+    let dotContainer = document.getElementById("dotContainer");
+    if (dotContainer) {
+        dotContainer.innerHTML = ""; // Clear existing dots
+
+        for (let i = 1; i <= total; i++) {
+            let dot = document.createElement("span");
+            dot.className = "dot";
+            dot.onclick = function () {
+                showElement(i);
+            };
+            dotContainer.appendChild(dot);
+
+            if (i === current) {
+                dot.className += " active";
             }
         }
     }
+}
 
-    $(document).ready(function () {
-        // Voeg element toe
-        $('#addDecoration').on("click", function () {
-            addSlide();
-            currentElement = $('.element').length; // Update currentElement naar het nieuw toegevoegde element
-            showElement(currentElement);
-        });
-
-        // Verwijder element
-        $('#elementsContainer').on("click", ".removeElement", function () {
-            $(this).closest('.element').remove();
-            showElement(currentElement);
-        });
+$(document).ready(function () {
+    // Voeg element toe
+    $('#addDecoration').on("click", function () {
+        addSlide();
+        currentElement = $('.element').length; // Update currentElement naar het nieuw toegevoegde element
+        showElement(currentElement);
     });
 
-    let decorationCounter = 1;
-    
-    function addSlide() {
-        decorationCounter++;
-        let newElement = $('<div class="element" style="display: none;">' +
-            '<input type="text" name="decoration[' + decorationCounter + '][name]" placeholder="Naam(Verjaardagsdecoratie)" maxlength="20">' +
-            '<input type="int" name="decoration[' + decorationCounter + '][time]" placeholder="Tijd (15 minuten)" maxlength="20">' +
-            '<i class="fa-solid fa-minus removeElement"></i>' +
-            '</div>');
+    // Verwijder element
+    $('#elementsContainer').on("click", ".removeElement", function () {
+        $(this).closest('.element').remove();
+        showElement(currentElement);
+    });
+});
 
-        $('#elementsContainer .slideshow-container').append(newElement);
-    }
+let decorationCounter = {{ count(json_decode($planning->decorations, true))-1}};;
+
+function addSlide() {
+    decorationCounter++;
+    let newElement = $('<div class="element" style="display: none;">' +
+        '<input type="text" name="decoration[' + decorationCounter + '][name]" placeholder="Naam(Verjaardagsdecoratie)" maxlength="20">' +
+        '<input type="int" name="decoration[' + decorationCounter + '][time]" placeholder="Tijd (15 minuten)" maxlength="20">' +
+        '<i class="fa-solid fa-minus removeElement"></i>' +
+        '</div>');
+
+    $('#elementsContainer .slideshow-container').append(newElement);
+}
 </script>
 
 @endsection

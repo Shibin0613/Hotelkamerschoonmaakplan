@@ -59,14 +59,14 @@
             @enderror
             @endforeach
             
-            <button>Huis aanmaken</button>
+            <button>Huis opslaan</button>
         </form>
     </div>
 </div>
 <!-- Ensure the script comes after jQuery inclusion -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-    let currentElement = 1;
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+let currentElement = 1;
 
 // Initialize dot container
 updateDotIndicators(currentElement, $('.element').length);
@@ -141,17 +141,17 @@ $(document).ready(function () {
     });
 });
 
-    let elementCounter = {{ count(json_decode($house->elements, true))}};
+let elementCounter = {{ count(json_decode($house->elements, true))}};
 
-    function addSlide() {
-        elementCounter++;
-        let newElement = $('<div class="element" style="display: none;">' +
-            '<input type="text" name="element[' + elementCounter + '][name]" placeholder="Naam(Keuken)" maxlength="20">' +
-            '<input type="text" name="element[' + elementCounter + '][time]" placeholder="Tijd (20 minuten)" maxlength="20">' +
-            '<i class="fa-solid fa-minus removeElement"></i>' +
-            '</div>');
+function addSlide() {
+    elementCounter++;
+    let newElement = $('<div class="element" style="display: none;">' +
+        '<input type="text" name="element[' + elementCounter + '][name]" placeholder="Naam(Keuken)" maxlength="20">' +
+        '<input type="text" name="element[' + elementCounter + '][time]" placeholder="Tijd (20 minuten)" maxlength="20">' +
+        '<i class="fa-solid fa-minus removeElement"></i>' +
+        '</div>');
 
-        $('#elementsContainer .slideshow-container').append(newElement);
-    }
-    </script>
+    $('#elementsContainer .slideshow-container').append(newElement);
+}
+</script>
 @endsection

@@ -20,7 +20,10 @@ class PlanningController extends Controller
     {
         $events = [];
         $user = Auth::user();
-        if($user->role === 1)
+        if(!isset($user)){
+            return redirect()->route('login');
+        }
+        elseif($user->role === 1)
         {
             $planningen = Planning::with('house','cleaners','damage')
             ->get();
@@ -36,7 +39,7 @@ class PlanningController extends Controller
         }
         elseif($user->role === 0)
         {
-            $planningen = Planning::with('house', 'cleaners', 'damage')
+            $planningen = Planning::with('house', 'cleaners', 'damage', 'decorations')
             ->whereHas('cleaners', function ($query) use ($user) {
                 $query->where('cleaner_id', $user->id);
             })
@@ -178,7 +181,6 @@ class PlanningController extends Controller
 
     public function updatePlanning(Request $request, $planningId)
     {
-        
         $planning = Planning::find($planningId);
         if (!$planning) {
             //Voor het geval als de planning niet te vinden is
@@ -212,8 +214,53 @@ class PlanningController extends Controller
 
         $planning->startdatetime = $request->startdatetime;
         $planning->enddatetime = $request->enddatetime;
-
+        
         if($planning->update()){
+            //aanpassen van cleaners die gekoppeld zijn op een planning
+            if(isset($request->schoonmakers)){
+                $schoonmakers = $request->input('schoonmakers');
+
+                // Verwijder de decoraties die gekoppeld zijn aan een planning
+                $planning->cleaners()
+                    ->whereNotIn('cleaner_id', array_keys($request->schoonmakers))
+                    ->detach();
+
+                foreach ($request->schoonmakers as $cleaner) {
+                    $planningCleaner = new PlanningCleaner([
+                        'planning_id' => $planningId,
+                        'cleaner_id' => $cleaner,
+                    ]);
+                
+                    $planningCleaner->save();
+                }
+            }
+
+            //Aanpassen van decoraties
+            if(isset($request->decoration)){
+                $decorations = $request->input('decoration');
+
+                //verwijder de decoraties die gekoppeld zijn op een planning
+                $planning->decorations()
+                ->whereNotIn('id', array_keys($request->decoration))
+                ->get()
+                ->each(function ($decoration) {
+                    $decoration->delete();
+                });
+
+                foreach($request->decoration as $decoration){
+                    if($decoration['name'] !== null && $decoration['time'] !== null){
+                        $decoration = new Extradecoration([
+                            'planning_id' => $planningId,
+                            'name' => $decoration['name'],
+                            'time' => $decoration['time'],
+                        ]);
+                    
+                        $decoration->save();
+                    }
+                }
+            }
+            
+
             return back()->with('success', 'Planning bijgewerkt');
         }
         else{
@@ -261,13 +308,22 @@ class PlanningController extends Controller
         $planning->status = $status;
 
         if($hasDamage){
-            $damage = new Damage([
-                'planning_id' => $planningId,
-                'name' => $request->damage,
-                'status' => 1,
-                'need' => 1,
-            ]);
-            $damage->save();
+            foreach($request->damage as $damage){
+                $damage = new Damage([
+                    'planning_id' => $planningId,
+                    'name' => $request->damage,
+                    'status' => 1,
+                    'need' => 1,
+                ]);
+
+                if($damage['need'] == 'on'){
+                    $damage->need = 1;
+                }elseif(!isset($damage->need)){
+                    $damage->need = 0;
+                }
+                
+                $damage->save();
+            }
         }
 
         if($planning->update())

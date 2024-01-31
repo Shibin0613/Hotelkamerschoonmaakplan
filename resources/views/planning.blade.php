@@ -23,7 +23,7 @@
                 <h2>{{$planning->house->name}}</h2>
                 <form method="post" action="{{ route('updatedplanning.updatedPlanning', ['planningId' => $planning->id]) }}">
                     @csrf
-                    <p>
+                    <p>Element:<br>
                         @foreach(json_decode($planning->element) as $elementId => $element)
                             {{$element->name}} {{$element->time}} minuten 
                             <input name="elements[{{$elementId}}][name]" hidden value="{{$element->name}}">
@@ -35,15 +35,16 @@
                             @endif
                         @endforeach
                     </p>
+                    
                     <label for="elements">Schade <i class="fa-solid fa-plus" id="addDamage"></i></label>
                     <div id="elementsContainer" class="elements-container">
                         <div class="slideshow-container">
                             <div class="element" style="display: block;">
-                                <input type="text" name="damage" placeholder="WC kapot?" maxlength="20">
+                                <input type="text" name="damage[0][name]" placeholder="WC kapot?" maxlength="20">
                                 <i class="fa-solid fa-minus removeElement"></i>
                                 <p>Nood?</p>
                                 <label class="switch">
-                                    <input type="checkbox" name="need">
+                                    <input type="checkbox" name="damage[0][need]">
                                     <span class="slider round"></span>
                                 </label>
                             </div>
@@ -216,7 +217,7 @@ function addSlide() {
     let newElement = $('<div class="element" style="display: none;">' +
         '<input type="text" name="damage[' + damageCounter + '][name]" placeholder="Keuken kapot?" maxlength="20">' +
         '<i class="fa-solid fa-minus removeElement"></i>' +
-        '<p>Nood?</p><label class="switch"><input type="checkbox"><span class="slider round"></span></label>' +
+        '<p>Nood?</p><label class="switch"><input type="checkbox" damage[' + damageCounter + '][need]><span class="slider round"></span></label>' +
         '</div>');
 
     $('#elementsContainer .slideshow-container').append(newElement);

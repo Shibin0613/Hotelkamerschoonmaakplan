@@ -51,79 +51,93 @@
     </div>
 </div>
 <!-- Ensure the script comes after jQuery inclusion -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-    let currentElement = 1;
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+let currentElement = 1;
 
-    // Initialize dot container
-    updateDotIndicators(currentElement, $('.element').length);
+// Initialize dot container
+updateDotIndicators(currentElement, $('.element').length);
 
-    function navigateElements(n) {
-        showElement(currentElement + n);
+function navigateElements(n) {
+    showElement(currentElement + n);
+}
+
+function showElement(n) {
+    let elements = document.getElementsByClassName("element");  
+    if (n > elements.length) {
+        currentElement = 1;
+    } else if (n < 1) {
+        currentElement = elements.length;
+    } else {
+        currentElement = n;
     }
 
-    function showElement(n) {
-        let elements = document.getElementsByClassName("element");
-        if (n > elements.length) {
-            currentElement = 1;
-        } else if (n < 1) {
-            currentElement = elements.length;
-        } else {
-            currentElement = n;
-        }
-
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].style.display = "none";
-        }
-        elements[currentElement - 1].style.display = "block";
-        updateDotIndicators(currentElement, elements.length);
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].style.display = "none";
     }
+    elements[currentElement - 1].style.display = "block";
+    updateDotIndicators(currentElement, elements.length);
 
-    function updateDotIndicators(current, total) {
-        let dotContainer = document.getElementById("dotContainer");
-        if (dotContainer) {
-            dotContainer.innerHTML = "";
+    // Bij het verwijderen van een element, werk de elementCounter en de nummering van de elementen bij
+    elementCounter = elements.length;
+    updateElementNumbering();
+}
 
-            for (let i = 1; i <= total; i++) {
-                let dot = document.createElement("span");
-                dot.className = "dot";
-                dot.onclick = function () {
-                    showElement(i);
-                };
-                dotContainer.appendChild(dot);
+function updateElementNumbering() {
+    $('.element').each(function (index) {
+        let newNumber = index + 1;
+        $(this).find('input[name^="element"]').each(function () {
+            let newName = $(this).attr('name').replace(/\[\d+\]/, '[' + newNumber + ']');
+            $(this).attr('name', newName);
+        });
+    });
+}
 
-                if (i === current) {
-                    dot.className += " active";
-                }
+function updateDotIndicators(current, total) {
+    let dotContainer = document.getElementById("dotContainer");
+    if (dotContainer) {
+        dotContainer.innerHTML = "";
+
+        for (let i = 1; i <= total; i++) {
+            let dot = document.createElement("span");
+            dot.className = "dot";
+            dot.onclick = function () {
+                showElement(i);
+            };
+            dotContainer.appendChild(dot);
+
+            if (i === current) {
+                dot.className += " active";
             }
         }
     }
+}
 
-    $(document).ready(function () {
-        // Voeg element toe
-        $('#addElement').on("click", function () {
-            addSlide();
-            showElement(++currentElement);
-        });
-
-        // Verwijder element
-        $('#elementsContainer').on("click", ".removeElement", function () {
-            $(this).closest('.element').remove();
-            showElement(currentElement);
-        });
+$(document).ready(function () {
+    // Voeg element toe
+    $('#addElement').on("click", function () {
+        addSlide();
+        showElement(++currentElement);
     });
 
-    let elementCounter = 1;
+    // Verwijder element
+    $('#elementsContainer').on("click", ".removeElement", function () {
+        $(this).closest('.element').remove();
+        showElement(currentElement);
+    });
+});
 
-    function addSlide() {
-        elementCounter++;
-        let newElement = $('<div class="element" style="display: none;">' +
-            '<input type="text" name="element[' + elementCounter + '][name]" placeholder="Naam(Keuken)" maxlength="35">' +
-            '<input type="text" name="element[' + elementCounter + '][time]" placeholder="Tijd (20 minuten)" maxlength="20">' +
-            '<i class="fa-solid fa-minus removeElement"></i>' +
-            '</div>');
+let elementCounter = 1;
 
-        $('#elementsContainer .slideshow-container').append(newElement);
-    }
-    </script>
+function addSlide() {
+    elementCounter++;
+    let newElement = $('<div class="element" style="display: none;">' +
+        '<input type="text" name="element[' + elementCounter + '][name]" placeholder="Naam(Keuken)" maxlength="35">' +
+        '<input type="text" name="element[' + elementCounter + '][time]" placeholder="Tijd (20 minuten)" maxlength="20">' +
+        '<i class="fa-solid fa-minus removeElement"></i>' +
+        '</div>');
+
+    $('#elementsContainer .slideshow-container').append(newElement);
+}
+</script>
 @endsection

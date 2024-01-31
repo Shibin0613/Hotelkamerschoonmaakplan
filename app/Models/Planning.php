@@ -31,7 +31,7 @@ class Planning extends Model
 
     public function damage()
     {
-        return $this->HasMany(Damage::class);
+        return $this->HasMany(Damage::class, 'id');
     }
 
     public function decorations()
