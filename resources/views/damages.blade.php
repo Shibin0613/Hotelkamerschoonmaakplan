@@ -11,14 +11,17 @@
             @foreach ($damages as $damage)
             <div class="damage">
                 <div class="info">
-                    @foreach($houses as $house)
-                    <p class="name">{{$house->name}}</p>
-                    @endforeach
+                    
+                    <p class="name">{{$damage->house->name}}</p>
                     <div class="divider"></div>
                     <p>{{$damage->name}}</p>
                     <div class="divider"></div>
-                    @if($damage->need == "1" && $damage->status == "1")
-                        <p>Nood</p>
+                    @if($damage->status == "1")
+                        @if($damage->need == "1")
+                            <p>Nood</p>
+                        @endif
+                    @else
+                    <p>Hersteld</p>
                     @endif
                 </div>
                 @if($damage->status =="1")
@@ -46,7 +49,7 @@
             <div class="close-btn">
                 <button type="button"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <h2>Is deze schade gesteld?</h2>
+            <h2>Is deze schade hersteld?</h2>
             <div class="buttons">
                 <button class="button">Afronden</button>
             </div>

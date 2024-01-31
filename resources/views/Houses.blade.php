@@ -10,6 +10,17 @@
         <a href="/createHouse"><i class="fa-solid fa-plus"></i></a>
     </div>
 
+    @if(Session::has('success'))
+    <div class="success-message" role="alert">
+        {{ Session::get('success') }}
+    </div>
+    @endif
+    @if (Session::has('error'))
+    <div class="alert alert-danger" role="alert">
+        {{ Session::get('error') }}
+    </div>
+    @endif
+
     @if (count($houses) > 0)
         <div class="houses">
             @foreach ($houses as $house)

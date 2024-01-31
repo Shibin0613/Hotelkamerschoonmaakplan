@@ -284,22 +284,12 @@ class PlanningController extends Controller
 
     public function damage()
     {
+        
         $damages = Damage::with('planning', 'house')
         ->orderByDesc('status')
         ->get();
 
-        if(!$damages){
-        }
-        else{
-            foreach($damages as $damage){
-                $house_id = $damage->planning->house_id;
-            }
-            $houses = DB::table('houses')
-            ->where('id',$house_id)
-            ->get();
-        }
-
-        return view('damages', compact('damages','houses'));
+        return view('damages', compact('damages'));
     }
 
     public function updateDamage($damageId)
@@ -313,7 +303,6 @@ class PlanningController extends Controller
         }
 
         $damage->status = 0;
-        $damage->datetime = date('Y-m-d H:i:s');
         if($damage->update())
         {
             return back()->with('success', 'Damage is afgerond');

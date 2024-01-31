@@ -126,6 +126,18 @@ class HouseController extends Controller
           }
         }
 
+        // Delete related planning->damage->extradecoration
+        $house->plannings()->each(function ($plannings) {
+            $plannings->damage()->delete();
+            $plannings->decorations()->delete();
+            $plannings->cleaners()->detach();
+            $plannings->delete();
+        });
+    
+        // Delete the template
+        $house->delete();
+
+        return back()->with(['success' => 'Vakantiehuis/hotelakmer is verwijderd']);
     }
 
 }
