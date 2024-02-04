@@ -21,11 +21,11 @@ class Damage extends Model
 
     public function planning()
     {
-        return $this->belongsTo(Planning::class);
+        return $this->belongsTo(Planning::class, 'planning_id');
     }
-
+    
     public function house()
     {
-        return $this->belongsTo(House::class,'id');
+        return $this->belongsTo(House::class, 'house_id');
     }
 }

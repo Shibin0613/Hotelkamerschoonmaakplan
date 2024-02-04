@@ -17,8 +17,8 @@ class House extends Model
         'elements',
     ];
 
-    public function plannings(): HasMany 
+    public function plannings()
     {
-        return $this->hasMany(Planning::class);
+        return $this->hasMany(Planning::class, 'house_id');
     }
 }

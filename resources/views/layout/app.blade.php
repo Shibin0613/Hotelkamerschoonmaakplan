@@ -23,7 +23,7 @@
         <div id="sidebar">
             <div>
                 <div class="logo" id="logo">
-                    <img src="{{ asset('images/HSP-logo.png') }}" alt="HSP Logo">
+                    <a href="/"><img src="{{ asset('images/HSP-logo.png') }}" alt="HSP Logo"></a>
                 </div>
                 <ul>
                     @if (Auth::user()->role === 1)

@@ -12,7 +12,7 @@
             <div class="damage">
                 <div class="info">
                     
-                    <p class="name">{{$damage->house->name}}</p>
+                    <p class="name">{{$damage->planning->house->name}}</p>
                     <div class="divider"></div>
                     <p>{{$damage->name}}</p>
                     <div class="divider"></div>

@@ -21,7 +21,7 @@ class Planning extends Model
 
     public function house()
     {
-        return $this->belongsTo(House::class);
+        return $this->belongsTo(House::class, 'house_id');
     }
 
     public function cleaners()
@@ -31,11 +31,11 @@ class Planning extends Model
 
     public function damage()
     {
-        return $this->HasMany(Damage::class, 'id');
+        return $this->hasMany(Damage::class, 'planning_id');
     }
 
     public function decorations()
     {
-        return $this->HasMany(Extradecoration::class);
+        return $this->hasMany(Extradecoration::class);
     }
 }

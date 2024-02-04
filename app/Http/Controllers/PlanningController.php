@@ -66,7 +66,6 @@ class PlanningController extends Controller
                 ];
             }
         }
-        
         return view('planning', compact('user','planningen','events'));
     }
 
@@ -77,14 +76,6 @@ class PlanningController extends Controller
         ->where('role', 0)
         ->whereNotNull('password')
         ->get();
-
-
-        $users = User::with('planning')
-            ->where('role', 0)
-            ->whereHas('planning', function ($query) {
-                $query->where('status', 0);
-            })
-            ->get();
 
         foreach($houses as $house){
             $elements[$house->id] = json_decode($house->elements);
@@ -292,6 +283,7 @@ class PlanningController extends Controller
                 break;
             }
         }
+        
         // Check of de damage input null is, als wel, dat is die planning afgerond zonder schade, anders wel 
         $hasDamage = $request->input('damage') !== null;
         // Update planning status
@@ -307,22 +299,24 @@ class PlanningController extends Controller
         $planning->element = $elementsJson;
         $planning->status = $status;
 
-        if($hasDamage){
+        if(isset($request->damage)){
             foreach($request->damage as $damage){
-                $damage = new Damage([
-                    'planning_id' => $planningId,
-                    'name' => $request->damage,
-                    'status' => 1,
-                    'need' => 1,
-                ]);
+                if($damage['name']!=null)
+                { 
+                    if(!isset($damage['need'])){
+                        $damageneed = 0;
+                    }elseif($damage['need'] == 'on'){
+                        $damageneed = 1;
+                    }
 
-                if($damage['need'] == 'on'){
-                    $damage->need = 1;
-                }elseif(!isset($damage->need)){
-                    $damage->need = 0;
+                    $damage = new Damage([
+                        'planning_id' => $planningId,
+                        'name' => $damage['name'],
+                        'status' => 1,
+                        'need' => $damageneed,
+                    ]);
+                    $damage->save();
                 }
-                
-                $damage->save();
             }
         }
 
@@ -340,17 +334,16 @@ class PlanningController extends Controller
 
     public function damage()
     {
-        
-        $damages = Damage::with('planning', 'house')
+        $damages = Damage::with('planning.house')
         ->orderByDesc('status')
+        ->orderByDesc('need')
         ->get();
-
+        
         return view('damages', compact('damages'));
     }
 
     public function updateDamage($damageId)
     {
-
         $damage = Damage::find($damageId);
 
         if (!$damage) {

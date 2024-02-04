@@ -10,6 +10,17 @@
         <a href="/createPlanning"><i class="fa-solid fa-plus"></i></a>
     </div>
     @endif
+
+    @if(Session::has('success'))
+    <div class="success-message" role="alert">
+        {{ Session::get('success') }}
+    </div>
+    @endif
+    @if (Session::has('error'))
+    <div class="alert alert-danger" role="alert">
+        {{ Session::get('error') }}
+    </div>
+    @endif
     
     <div id="calendar"></div>
 
@@ -37,6 +48,11 @@
                     </p>
                     
                     <label for="elements">Schade <i class="fa-solid fa-plus" id="addDamage"></i></label>
+                    <p>
+                    @foreach($planning->damage as $aantal => $damage)
+                    Schade {{$aantal+1}}: {{$damage->name}}<br>
+                    @endforeach
+                    </p>
                     <div id="elementsContainer" class="elements-container">
                         <div class="slideshow-container">
                             <div class="element" style="display: block;">
@@ -217,8 +233,9 @@ function addSlide() {
     let newElement = $('<div class="element" style="display: none;">' +
         '<input type="text" name="damage[' + damageCounter + '][name]" placeholder="Keuken kapot?" maxlength="20">' +
         '<i class="fa-solid fa-minus removeElement"></i>' +
-        '<p>Nood?</p><label class="switch"><input type="checkbox" damage[' + damageCounter + '][need]><span class="slider round"></span></label>' +
+        '<p>Nood?</p><label class="switch"><input type="checkbox" name="damage[' + damageCounter + '][need]"><span class="slider round"></span></label>' +
         '</div>');
+
 
     $('#elementsContainer .slideshow-container').append(newElement);
 }
