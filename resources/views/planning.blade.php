@@ -23,14 +23,14 @@
     @endif
     
     <div id="calendar"></div>
-
+    @if(Auth::user()->role === 0)
+    @foreach($planningen as $planning)
     <div id="finish-planning-modal">
         <div class="modal-content">
             <div class="close-btn">
                 <button type="button"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
-            @foreach($planningen as $planning)
+            
                 <h2>{{$planning->house->name}}</h2>
                 <form method="post" action="{{ route('updatedplanning.updatedPlanning', ['planningId' => $planning->id]) }}">
                     @csrf
@@ -75,9 +75,10 @@
                         <button class="button">Versturen</button>
                     </div>
                 </form>
-            @endforeach
         </div>
     </div>
+    @endforeach
+    @endif
     
 </div>
 <!-- Include FullCalendar dependencies -->
